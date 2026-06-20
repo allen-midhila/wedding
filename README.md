@@ -2,6 +2,9 @@
 
 Single source of truth for our wedding planning. Everything lives in the [`info/`](info/) folder.
 
+git config user.name "Jojy"
+git config user.email "jojyalexster@gmail.com"
+
 **Couple:** Allen Abraham Mundupadam & Midhila Das
 **Confirmed events:**
 1. **Hindu-style Engagement** — 11 July 2026, Tirur, Malappuram
