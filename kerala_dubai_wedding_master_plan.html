@@ -1,0 +1,379 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans, sans-serif); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; padding: 1rem 0 0.5rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .tab { padding: 7px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); font-size: 13px; cursor: pointer; background: transparent; color: var(--color-text-secondary); transition: all .15s; }
+  .tab.active { background: var(--color-background-secondary); color: var(--color-text-primary); font-weight: 500; border-color: var(--color-border-secondary); }
+  .tab:hover:not(.active) { background: var(--color-background-secondary); }
+  .panel { display: none; padding: 1rem 0; }
+  .panel.active { display: block; }
+  .section-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); margin: 1.2rem 0 0.6rem; }
+  .section-title:first-child { margin-top: 0; }
+  .event-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px 16px; margin-bottom: 10px; }
+  .event-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .badge { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+  .badge-kerala { background: var(--color-background-success); color: var(--color-text-success); }
+  .badge-dubai { background: var(--color-background-info); color: var(--color-text-info); }
+  .badge-hindu { background: #FAEEDA; color: #633806; }
+  .badge-christian { background: #E6F1FB; color: #0C447C; }
+  .badge-both { background: #EEEDFE; color: #3C3489; }
+  .badge-warning { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .event-name { font-weight: 500; font-size: 15px; color: var(--color-text-primary); }
+  .event-day { font-size: 13px; color: var(--color-text-secondary); }
+  .detail-row { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+  .detail-row i { font-size: 15px; margin-top: 1px; flex-shrink: 0; color: var(--color-text-tertiary); }
+  .detail-text { color: var(--color-text-secondary); line-height: 1.5; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-bottom: 12px; }
+  .info-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 14px 16px; }
+  .info-card-title { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .info-card-title i { font-size: 16px; }
+  .info-card-body { font-size: 14px; font-weight: 500; color: var(--color-text-primary); line-height: 1.6; }
+  .checklist { list-style: none; }
+  .checklist li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--color-text-secondary); padding: 6px 0; border-bottom: 0.5px solid var(--color-border-tertiary); line-height: 1.5; }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li i { font-size: 15px; margin-top: 1px; flex-shrink: 0; }
+  .check-done { color: var(--color-text-success); }
+  .check-warn { color: var(--color-text-warning); }
+  .check-info { color: var(--color-text-info); }
+  .budget-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .budget-row:last-child { border-bottom: none; font-weight: 500; font-size: 14px; }
+  .budget-row .label { color: var(--color-text-secondary); }
+  .budget-row .amount { color: var(--color-text-primary); font-weight: 500; }
+  .budget-row .amount.total { color: var(--color-text-warning); }
+  .progress-bar-wrap { background: var(--color-background-secondary); border-radius: 4px; height: 6px; margin: 6px 0 14px; overflow: hidden; }
+  .progress-bar { height: 6px; border-radius: 4px; }
+  .tip-box { background: var(--color-background-info); border: 0.5px solid var(--color-border-tertiary); border-left: 3px solid var(--color-border-info); border-radius: var(--border-radius-md); padding: 10px 14px; margin: 10px 0; font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+  .tip-box strong { color: var(--color-text-primary); font-weight: 500; }
+  .timeline-line { display: flex; gap: 0; margin-bottom: 10px; }
+  .tl-block { flex: 1; text-align: center; padding: 8px 4px; font-size: 12px; color: var(--color-text-secondary); position: relative; }
+  .tl-block:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 50%; width: 1px; height: 60%; background: var(--color-border-tertiary); transform: translateY(-50%); }
+  .tl-month { font-weight: 500; font-size: 13px; color: var(--color-text-primary); display: block; }
+  .tl-dot { width: 8px; height: 8px; border-radius: 50%; margin: 4px auto; }
+  .dot-green { background: #1D9E75; }
+  .dot-amber { background: #EF9F27; }
+  .dot-blue { background: #378ADD; }
+  .dot-red { background: #E24B4A; }
+  .vendor-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; }
+  .vendor-row:last-child { border-bottom: none; }
+  .vendor-name { font-weight: 500; color: var(--color-text-primary); }
+  .vendor-note { color: var(--color-text-secondary); font-size: 12px; margin-top: 2px; }
+  .vendor-priority { font-size: 11px; padding: 2px 8px; border-radius: 20px; }
+  .p-high { background: #FCEBEB; color: #A32D2D; }
+  .p-med { background: #FAEEDA; color: #633806; }
+  .p-low { background: #EAF3DE; color: #3B6D11; }
+</style>
+
+<h2 class="sr-only">Kerala–Dubai Hindu–Christian wedding master plan: events, budget, vendors, and logistics.</h2>
+
+<div class="tabs">
+  <button class="tab active" onclick="show('events')"><i class="ti ti-calendar-event" aria-hidden="true"></i> Events</button>
+  <button class="tab" onclick="show('venues')"><i class="ti ti-building" aria-hidden="true"></i> Venues & Stay</button>
+  <button class="tab" onclick="show('budget')"><i class="ti ti-coin-rupee" aria-hidden="true"></i> Budget</button>
+  <button class="tab" onclick="show('invites')"><i class="ti ti-mail" aria-hidden="true"></i> Invitations</button>
+  <button class="tab" onclick="show('vendors')"><i class="ti ti-list-check" aria-hidden="true"></i> Vendors</button>
+  <button class="tab" onclick="show('logistics')"><i class="ti ti-plane" aria-hidden="true"></i> Logistics</button>
+  <button class="tab" onclick="show('timeline')"><i class="ti ti-clock" aria-hidden="true"></i> Planning Timeline</button>
+</div>
+
+<!-- EVENTS -->
+<div id="panel-events" class="panel active">
+  <p class="section-title">Kerala — Main ceremony days (Days 1–4)</p>
+
+  <div class="event-card">
+    <div class="event-header">
+      <span class="badge badge-kerala">Kerala · Day 1</span>
+      <span class="badge badge-both">Both families</span>
+    </div>
+    <div class="event-name">Engagement & Nischayathartham / Ring Ceremony</div>
+    <div class="event-day">Evening — Venue: wedding resort or ancestral home</div>
+    <div class="detail-row"><i class="ti ti-users" aria-hidden="true"></i><span class="detail-text">Immediate family + close relatives (~100 guests). Exchange of rings, formal betrothal rituals from both Hindu and Christian traditions. Light dinner & music.</span></div>
+  </div>
+
+  <div class="event-card">
+    <div class="event-header">
+      <span class="badge badge-kerala">Kerala · Day 2 morning</span>
+      <span class="badge badge-hindu">Hindu</span>
+    </div>
+    <div class="event-name">Haldi / Nalungu</div>
+    <div class="event-day">Morning — Venue: home/resort courtyard</div>
+    <div class="detail-row"><i class="ti ti-users" aria-hidden="true"></i><span class="detail-text">Turmeric paste applied by family members to bride and groom at their respective homes. Separate ceremonies ideally, joined later. ~50 guests each. Flower decor, brass lamps.</span></div>
+  </div>
+
+  <div class="event-card">
+    <div class="event-header">
+      <span class="badge badge-kerala">Kerala · Day 2 evening</span>
+      <span class="badge badge-both">Both</span>
+    </div>
+    <div class="event-name">Sangeet / Musical Night</div>
+    <div class="event-day">Evening — Banquet hall or resort lawn</div>
+    <div class="detail-row"><i class="ti ti-music" aria-hidden="true"></i><span class="detail-text">Live Carnatic/folk music + choreographed dances from both families. MC, DJ, lighting. 200–300 guests. Kerala sadya-style snacks + cocktail spread. Photo booth setup.</span></div>
+  </div>
+
+  <div class="event-card">
+    <div class="event-header">
+      <span class="badge badge-kerala">Kerala · Day 3 morning</span>
+      <span class="badge badge-hindu">Hindu</span>
+    </div>
+    <div class="event-name">Hindu Wedding — Thiruvananthapuram style</div>
+    <div class="event-day">Morning 8–11 AM — Mandap ceremony</div>
+    <div class="detail-row"><i class="ti ti-flame" aria-hidden="true"></i><span class="detail-text">Homam, kanyadanam, saptapadi, thali tying. Traditional Kerala music (Nadaswaram, Chenda). Full sadya lunch for all guests (~400). Kasavu saree, mundu veshti attire.</span></div>
+  </div>
+
+  <div class="event-card">
+    <div class="event-header">
+      <span class="badge badge-kerala">Kerala · Day 3 evening</span>
+      <span class="badge badge-christian">Christian</span>
+    </div>
+    <div class="event-name">Christian Blessing / Solemnization</div>
+    <div class="event-day">Evening 4–6 PM — Church or resort chapel setup</div>
+    <div class="detail-row"><i class="ti ti-building-church" aria-hidden="true"></i><span class="detail-text">Blessing ceremony officiated by a pastor/priest. Exchange of vows, ring exchange, prayer. Western or fusion dress for bride. ~300 guests. Choir or live hymns. Followed by dinner.</span></div>
+  </div>
+
+  <div class="event-card">
+    <div class="event-header">
+      <span class="badge badge-kerala">Kerala · Day 4</span>
+      <span class="badge badge-both">Both families</span>
+    </div>
+    <div class="event-name">Griha Pravesh / Home Welcome</div>
+    <div class="event-day">Morning — Groom's family home or resort room</div>
+    <div class="detail-row"><i class="ti ti-home" aria-hidden="true"></i><span class="detail-text">Bride welcomed into groom's home: stepping on rice, lamp lighting. Intimate family ritual (~30 people). Gift exchange, blessings from elders. Final Kerala farewell lunch.</span></div>
+  </div>
+
+  <p class="section-title">Dubai — Grand reception (2–3 weeks later)</p>
+
+  <div class="event-card">
+    <div class="event-header">
+      <span class="badge badge-dubai">Dubai · Evening 1</span>
+      <span class="badge badge-both">Both families</span>
+    </div>
+    <div class="event-name">Dubai Reception — Grand Celebration</div>
+    <div class="event-day">Saturday evening — Banquet hall, 6 PM onwards</div>
+    <div class="detail-row"><i class="ti ti-confetti" aria-hidden="true"></i><span class="detail-text">Cocktail hour 6–7 PM, grand entrance 7 PM. Multi-course dinner (Indian + continental menu). DJ + live singer. 300–400 guests including UAE-based family and friends. Formal couple portraits. First dance, family dances, open floor.</span></div>
+  </div>
+
+  <div class="event-card">
+    <div class="event-header">
+      <span class="badge badge-dubai">Dubai · Afternoon 2</span>
+      <span class="badge badge-both">Intimate</span>
+    </div>
+    <div class="event-name">Dubai Family Brunch</div>
+    <div class="event-day">Sunday afternoon — Hotel private dining</div>
+    <div class="detail-row"><i class="ti ti-coffee" aria-hidden="true"></i><span class="detail-text">Relaxed brunch for close family (~60 people). Thank-you gifts for guests. Cake cutting. Casual dress. Serves as farewell for Kerala guests flying back.</span></div>
+  </div>
+
+  <div class="tip-box"><strong>Tip:</strong> Stagger Kerala and Dubai events by 2–3 weeks so the couple can rest and Kerala guests planning to attend Dubai have time to arrange travel and UAE visas.</div>
+</div>
+
+<!-- VENUES & STAY -->
+<div id="panel-venues" class="panel">
+  <p class="section-title">Kerala — Recommended venue types</p>
+  <div class="grid2">
+    <div class="info-card">
+      <div class="info-card-title"><i class="ti ti-building" aria-hidden="true"></i> Heritage resort (best value)</div>
+      <div class="info-card-body">Kumarakom Lake Resort, Uday Samudra (Kovalam), or CGH Earth properties. 5–6 acres, mandap space, banquet halls, in-house catering. Budget: ₹4–8L for full 3-day block booking.</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title"><i class="ti ti-home" aria-hidden="true"></i> Convention centre + home</div>
+      <div class="info-card-body">Nair Service Society halls, Kerala Hotels halls, or TDM Hall (Trivandrum). More affordable but needs external catering. Budget: ₹1.5–3L for venue hire.</div>
+    </div>
+  </div>
+
+  <p class="section-title">Guest accommodation — Kerala</p>
+  <ul class="checklist">
+    <li><i class="ti ti-building check-info" aria-hidden="true"></i><span>Block-book 30–40 rooms at the main resort for outstation guests. Negotiate group rates (ask for 20–30% off rack rate for 3+ nights).</span></li>
+    <li><i class="ti ti-map-pin check-info" aria-hidden="true"></i><span>Shortlist 2–3 nearby hotels (3-star) for overflow guests: Hotel Residency Tower, Raj Park, or similar Trivandrum properties.</span></li>
+    <li><i class="ti ti-bus check-info" aria-hidden="true"></i><span>Arrange shuttle buses between overflow hotels and main venue every 90 minutes on event days.</span></li>
+    <li><i class="ti ti-plane check-info" aria-hidden="true"></i><span>Airport transfer service for VIP guests flying into TRV (Trivandrum International). Share cab-pool arrangements via WhatsApp group.</span></li>
+  </ul>
+
+  <p class="section-title">Dubai — Venue options</p>
+  <div class="grid2">
+    <div class="info-card">
+      <div class="info-card-title"><i class="ti ti-building" aria-hidden="true"></i> Ballroom hotel</div>
+      <div class="info-card-body">JW Marriott Marquis, Sofitel Dubai, Grand Hyatt. Full-service, in-house décor and catering. Capacity 400–600. Budget: AED 80K–150K (₹18–35L).</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title"><i class="ti ti-building-community" aria-hidden="true"></i> Indian community halls</div>
+      <div class="info-card-body">Kerala Samajam halls (Al Quoz, Oud Metha), IBPC Dubai. Budget-friendly, familiar to the community. Capacity 300–500. Budget: AED 15K–30K (₹3.5–7L).</div>
+    </div>
+  </div>
+
+  <p class="section-title">Guest accommodation — Dubai</p>
+  <ul class="checklist">
+    <li><i class="ti ti-building check-info" aria-hidden="true"></i><span>Kerala guests traveling to Dubai: block-book rooms at the wedding hotel or nearby property. Deira and Bur Dubai have affordable Indian-friendly hotels (AED 150–250/night).</span></li>
+    <li><i class="ti ti-id-badge check-info" aria-hidden="true"></i><span>UAE entry: Indian passport holders need a visa. Apply via Emirates/Air India (visa on arrival possible) or Dubai e-visa — at least 3–4 weeks in advance.</span></li>
+    <li><i class="ti ti-car check-info" aria-hidden="true"></i><span>Arrange Careem/Uber corporate codes or a minibus for guest transfers on reception day.</span></li>
+  </ul>
+</div>
+
+<!-- BUDGET -->
+<div id="panel-budget" class="panel">
+  <div class="tip-box"><strong>Budget range:</strong> ₹20–50 Lakhs total. Breakdown below targets ₹38–40L mid-range. Savings are possible by choosing community halls over premium hotels for Dubai.</div>
+
+  <p class="section-title">Kerala events</p>
+  <div class="info-card" style="margin-bottom:12px">
+    <div class="budget-row"><span class="label">Venue (resort block, 3 days)</span><span class="amount">₹5–8L</span></div>
+    <div class="progress-bar-wrap"><div class="progress-bar" style="width:40%;background:#1D9E75"></div></div>
+    <div class="budget-row"><span class="label">Catering — Kerala sadya + dinners (400 guests)</span><span class="amount">₹6–9L</span></div>
+    <div class="progress-bar-wrap"><div class="progress-bar" style="width:45%;background:#1D9E75"></div></div>
+    <div class="budget-row"><span class="label">Decor — mandap, floral, lighting (all 3 days)</span><span class="amount">₹3–5L</span></div>
+    <div class="progress-bar-wrap"><div class="progress-bar" style="width:25%;background:#1D9E75"></div></div>
+    <div class="budget-row"><span class="label">Photography + videography (4 days)</span><span class="amount">₹2–3.5L</span></div>
+    <div class="progress-bar-wrap"><div class="progress-bar" style="width:18%;background:#0F6E56"></div></div>
+    <div class="budget-row"><span class="label">Bridal & groom attire (both ceremonies)</span><span class="amount">₹1.5–3L</span></div>
+    <div class="budget-row"><span class="label">Music — Nadaswaram, Chenda, DJ, sangeet band</span><span class="amount">₹1–2L</span></div>
+    <div class="budget-row"><span class="label">Priest / pastor fees + rituals</span><span class="amount">₹0.3–0.6L</span></div>
+    <div class="budget-row"><span class="label">Guest shuttles & airport transfers</span><span class="amount">₹0.5–1L</span></div>
+    <div class="budget-row"><span class="label"><strong>Kerala subtotal</strong></span><span class="amount total">₹19–32L</span></div>
+  </div>
+
+  <p class="section-title">Dubai reception</p>
+  <div class="info-card" style="margin-bottom:12px">
+    <div class="budget-row"><span class="label">Venue — community hall or hotel ballroom</span><span class="amount">₹3–18L</span></div>
+    <div class="budget-row"><span class="label">Catering (300–400 guests, per-plate)</span><span class="amount">₹4–8L</span></div>
+    <div class="budget-row"><span class="label">Decor + floral in Dubai</span><span class="amount">₹1.5–3L</span></div>
+    <div class="budget-row"><span class="label">DJ + live singer</span><span class="amount">₹1–2L</span></div>
+    <div class="budget-row"><span class="label">Photography + highlight reel</span><span class="amount">₹1–2L</span></div>
+    <div class="budget-row"><span class="label">Guest transfers + hotel room block</span><span class="amount">₹0.5–1L</span></div>
+    <div class="budget-row"><span class="label"><strong>Dubai subtotal</strong></span><span class="amount total">₹11–34L</span></div>
+  </div>
+
+  <div class="info-card">
+    <div class="budget-row"><span class="label">Kerala total</span><span class="amount">₹19–32L</span></div>
+    <div class="budget-row"><span class="label">Dubai total</span><span class="amount">₹11–34L</span></div>
+    <div class="budget-row"><span class="label">Contingency (5–8%)</span><span class="amount">₹1.5–3L</span></div>
+    <div class="budget-row"><span class="label"><strong>Total estimated range</strong></span><span class="amount total">₹32–69L</span></div>
+  </div>
+
+  <div class="tip-box" style="margin-top:12px"><strong>To stay under ₹50L:</strong> Use Kerala Samajam / community hall in Dubai (saves ₹10–15L vs hotel ballroom), limit sadya to Day 3 only (Days 1–2 do buffet), and cap guest list at 350 in Kerala + 250 in Dubai.</div>
+</div>
+
+<!-- INVITATIONS -->
+<div id="panel-invites" class="panel">
+  <p class="section-title">Invitation design</p>
+  <div class="grid2">
+    <div class="info-card">
+      <div class="info-card-title"><i class="ti ti-file-text" aria-hidden="true"></i> Traditional printed (primary)</div>
+      <div class="info-card-body">Kerala-style box invitation in cream/gold with both traditions — lotus + cross motif. Bilingual: Malayalam + English. Inner cards: Hindu ceremony, Christian ceremony, Dubai reception.</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title"><i class="ti ti-device-mobile" aria-hidden="true"></i> Digital invite (WhatsApp)</div>
+      <div class="info-card-body">Animated video invite (60–90 sec) with traditional music. Sent 6 weeks before Kerala, 4 weeks before Dubai. Includes Google Maps links for venues.</div>
+    </div>
+  </div>
+
+  <p class="section-title">What to include in the invite</p>
+  <ul class="checklist">
+    <li><i class="ti ti-check check-done" aria-hidden="true"></i><span>Event schedule card — all ceremonies with timings for Kerala days</span></li>
+    <li><i class="ti ti-check check-done" aria-hidden="true"></i><span>Separate Dubai reception card (can be sent later as a second wave)</span></li>
+    <li><i class="ti ti-check check-done" aria-hidden="true"></i><span>Hotel block info: resort name, contact, and booking code</span></li>
+    <li><i class="ti ti-check check-done" aria-hidden="true"></i><span>RSVP link or WhatsApp number with deadline (3 weeks before)</span></li>
+    <li><i class="ti ti-check check-done" aria-hidden="true"></i><span>Dress code guidance per event (kasavu for Hindu, semi-formal for Christian, formal for Dubai)</span></li>
+    <li><i class="ti ti-alert-circle check-warn" aria-hidden="true"></i><span>For Dubai guests: UAE visa application link and deadline reminder</span></li>
+    <li><i class="ti ti-alert-circle check-warn" aria-hidden="true"></i><span>Dietary preferences / allergy card for catering coordination</span></li>
+  </ul>
+
+  <p class="section-title">Send-out schedule</p>
+  <ul class="checklist">
+    <li><i class="ti ti-calendar check-info" aria-hidden="true"></i><span><strong>3 months before Kerala:</strong> Save-the-date WhatsApp message for outstation and Dubai guests</span></li>
+    <li><i class="ti ti-calendar check-info" aria-hidden="true"></i><span><strong>6 weeks before Kerala:</strong> Printed invites dispatched + digital video invite sent</span></li>
+    <li><i class="ti ti-calendar check-info" aria-hidden="true"></i><span><strong>4 weeks before Kerala:</strong> RSVP deadline for Kerala events</span></li>
+    <li><i class="ti ti-calendar check-info" aria-hidden="true"></i><span><strong>6 weeks before Dubai:</strong> Dubai-only invitation wave (for guests not attending Kerala)</span></li>
+    <li><i class="ti ti-calendar check-info" aria-hidden="true"></i><span><strong>2 weeks before Dubai:</strong> Final headcount confirmation to Dubai venue and caterer</span></li>
+  </ul>
+
+  <div class="tip-box"><strong>Recommended vendors:</strong> Invites by Lalitha (Trivandrum), WedMeGood digital invites, or local printing press in T'puram. Budget ₹30–60K for 500 printed sets.</div>
+</div>
+
+<!-- VENDORS -->
+<div id="panel-vendors" class="panel">
+  <p class="section-title">Kerala vendor checklist</p>
+  <div class="info-card" style="margin-bottom:12px">
+    <div class="vendor-row"><div><div class="vendor-name">Wedding planner / coordinator</div><div class="vendor-note">Single point of contact for all 4 Kerala days</div></div><span class="vendor-priority p-high">Book 6 months out</span></div>
+    <div class="vendor-row"><div><div class="vendor-name">Photographer + videographer</div><div class="vendor-note">Kerala specialist for both Hindu & Christian coverage</div></div><span class="vendor-priority p-high">Book 6 months out</span></div>
+    <div class="vendor-row"><div><div class="vendor-name">Floral & decor company</div><div class="vendor-note">Mandap, entrance, banquet, Christian setup</div></div><span class="vendor-priority p-high">Book 4–5 months out</span></div>
+    <div class="vendor-row"><div><div class="vendor-name">Catering — sadya specialist</div><div class="vendor-note">Traditional banana-leaf sadya + buffet for other meals</div></div><span class="vendor-priority p-high">Book 4 months out</span></div>
+    <div class="vendor-row"><div><div class="vendor-name">Nadaswaram & Chenda troupe</div><div class="vendor-note">For Hindu ceremony processional and rituals</div></div><span class="vendor-priority p-med">Book 3 months out</span></div>
+    <div class="vendor-row"><div><div class="vendor-name">Pastor / Priest (both traditions)</div><div class="vendor-note">Confirm availability & interfaith agreement</div></div><span class="vendor-priority p-high">Confirm early</span></div>
+    <div class="vendor-row"><div><div class="vendor-name">Bridal makeup & hair artist</div><div class="vendor-note">Kerala traditional for Day 3 + western/fusion for Day 3 evening</div></div><span class="vendor-priority p-med">Book 3 months out</span></div>
+    <div class="vendor-row"><div><div class="vendor-name">DJ + sangeet band</div><div class="vendor-note">For sangeet night on Day 2</div></div><span class="vendor-priority p-med">Book 3 months out</span></div>
+    <div class="vendor-row"><div><div class="vendor-name">Transport / shuttle service</div><div class="vendor-note">AC coaches for 200–300 guests across 4 days</div></div><span class="vendor-priority p-low">Book 2 months out</span></div>
+  </div>
+
+  <p class="section-title">Dubai vendor checklist</p>
+  <div class="info-card">
+    <div class="vendor-row"><div><div class="vendor-name">Dubai wedding coordinator</div><div class="vendor-note">Preferably Malayalam/Indian-speaking, knows Kerala community venues</div></div><span class="vendor-priority p-high">Book 5 months out</span></div>
+    <div class="vendor-row"><div><div class="vendor-name">Venue & catering package</div><div class="vendor-note">Most halls include in-house catering — negotiate Indian menu</div></div><span class="vendor-priority p-high">Book 5 months out</span></div>
+    <div class="vendor-row"><div><div class="vendor-name">Dubai photographer</div><div class="vendor-note">Or fly your Kerala photographer — factor in travel + hotel</div></div><span class="vendor-priority p-med">Book 3 months out</span></div>
+    <div class="vendor-row"><div><div class="vendor-name">DJ + live singer (Bollywood/Malayalam)</div><div class="vendor-note">Dubai has many Indian entertainment artists</div></div><span class="vendor-priority p-med">Book 3 months out</span></div>
+    <div class="vendor-row"><div><div class="vendor-name">Cake (3-tier or themed)</div><div class="vendor-note">Bakeries in Karama or Deira for Indian-fusion designs</div></div><span class="vendor-priority p-low">Book 6 weeks out</span></div>
+  </div>
+</div>
+
+<!-- LOGISTICS -->
+<div id="panel-logistics" class="panel">
+  <p class="section-title">Travel logistics — Kerala</p>
+  <ul class="checklist">
+    <li><i class="ti ti-plane check-info" aria-hidden="true"></i><span><strong>Nearest airport:</strong> Trivandrum International (TRV). Fly-in guests from Dubai: IndiGo, Air India, Emirates all operate this route.</span></li>
+    <li><i class="ti ti-train check-info" aria-hidden="true"></i><span>Train guests: Trivandrum Central is well connected. Pre-book Tatkal quota tickets for outstation family 2 months in advance.</span></li>
+    <li><i class="ti ti-bus check-info" aria-hidden="true"></i><span>Create a coordinated shuttle schedule: airport/station → hotel → venue for each event day. Share timetable in family WhatsApp group.</span></li>
+    <li><i class="ti ti-map-pin check-info" aria-hidden="true"></i><span>Create a shared Google Maps list with: main venue, overflow hotels, nearby hospitals, recommended restaurants for leisure days.</span></li>
+  </ul>
+
+  <p class="section-title">Travel logistics — Dubai</p>
+  <ul class="checklist">
+    <li><i class="ti ti-id check-warn" aria-hidden="true"></i><span><strong>Visa for Indian nationals:</strong> Apply Dubai e-visa via Emirates, Air Arabia, or VFS Global. Processing: 3–5 working days. Cost: ~AED 250. Apply 4 weeks minimum before travel.</span></li>
+    <li><i class="ti ti-plane check-info" aria-hidden="true"></i><span>Main departure airports from Kerala: TRV (Trivandrum), COK (Kochi), or CCJ (Calicut). Emirates, IndiGo, Air India all fly direct to DXB.</span></li>
+    <li><i class="ti ti-building check-info" aria-hidden="true"></i><span>Negotiate group airfare with Air India or IndiGo for a family block (10+ travelers) — possible 10–15% group discount.</span></li>
+    <li><i class="ti ti-cash check-warn" aria-hidden="true"></i><span>Dubai venue deposit: typically 50% advance in AED. Maintain a Dubai AED float or transfer via Wise/bank for smooth payments.</span></li>
+    <li><i class="ti ti-heart check-info" aria-hidden="true"></i><span>Travel insurance for all Kerala guests flying to Dubai — especially elders. Covers medical emergencies and flight cancellations.</span></li>
+  </ul>
+
+  <p class="section-title">Day-of coordination</p>
+  <ul class="checklist">
+    <li><i class="ti ti-check check-done" aria-hidden="true"></i><span>Assign one family coordinator per event (different person each day to avoid burnout)</span></li>
+    <li><i class="ti ti-check check-done" aria-hidden="true"></i><span>Print a physical event order sheet for every vendor: times, sequence, contacts</span></li>
+    <li><i class="ti ti-check check-done" aria-hidden="true"></i><span>Prepare welcome kits for outstation guests: itinerary, local SIM or WiFi info, venue map, emergency contacts</span></li>
+    <li><i class="ti ti-check check-done" aria-hidden="true"></i><span>Set up a family WhatsApp broadcast list for real-time updates ("Gates open," "Sadya served")</span></li>
+  </ul>
+</div>
+
+<!-- PLANNING TIMELINE -->
+<div id="panel-timeline" class="panel">
+  <p class="section-title">12-month countdown</p>
+
+  <div class="timeline-line">
+    <div class="tl-block"><span class="tl-month">12 mo</span><div class="tl-dot dot-red"></div><span>Lock dates & venue</span></div>
+    <div class="tl-block"><span class="tl-month">9 mo</span><div class="tl-dot dot-red"></div><span>Book photographer, planner</span></div>
+    <div class="tl-block"><span class="tl-month">6 mo</span><div class="tl-dot dot-amber"></div><span>Book Dubai venue</span></div>
+    <div class="tl-block"><span class="tl-month">4 mo</span><div class="tl-dot dot-amber"></div><span>Invites out, decor brief</span></div>
+    <div class="tl-block"><span class="tl-month">2 mo</span><div class="tl-dot dot-blue"></div><span>Confirm headcount, visas</span></div>
+    <div class="tl-block"><span class="tl-month">1 mo</span><div class="tl-dot dot-green"></div><span>Final run-through</span></div>
+  </div>
+
+  <p class="section-title">Detailed milestone checklist</p>
+  <ul class="checklist">
+    <li><i class="ti ti-circle-check check-done" aria-hidden="true"></i><span><strong>12 months out:</strong> Fix wedding date (check auspicious muhurtham for Hindu ceremony), book Kerala venue, set budget split between Kerala and Dubai.</span></li>
+    <li><i class="ti ti-circle-check check-done" aria-hidden="true"></i><span><strong>9–10 months:</strong> Book photographer, videographer, Kerala wedding planner. Start attire shopping.</span></li>
+    <li><i class="ti ti-circle-check check-done" aria-hidden="true"></i><span><strong>6–8 months:</strong> Book Dubai venue, Kerala catering, decor vendor, music. Finalise guest list (Kerala vs Dubai split).</span></li>
+    <li><i class="ti ti-circle-check check-done" aria-hidden="true"></i><span><strong>4–5 months:</strong> Send save-the-dates. Design and print invitations. Confirm priest/pastor for both ceremonies. Book hotel room blocks.</span></li>
+    <li><i class="ti ti-circle-check check-done" aria-hidden="true"></i><span><strong>3 months:</strong> Send invitations. Finalise menus. Book shuttle vehicles. Order wedding cake (Dubai).</span></li>
+    <li><i class="ti ti-circle-check check-done" aria-hidden="true"></i><span><strong>2 months:</strong> Collect RSVPs. Begin UAE visa applications for Kerala guests. Book flights for family travel to Dubai.</span></li>
+    <li><i class="ti ti-circle-check check-done" aria-hidden="true"></i><span><strong>1 month:</strong> Final fittings. Confirm all vendors with day-of schedules. Create event order document. Pack outstation guest kits.</span></li>
+    <li><i class="ti ti-circle-check check-done" aria-hidden="true"></i><span><strong>1 week out:</strong> Final headcount to caterers. Distribute shuttles schedule. Brief all family coordinators.</span></li>
+    <li><i class="ti ti-circle-check check-done" aria-hidden="true"></i><span><strong>Day before:</strong> Venue walkthrough with planner. Confirm photographer timings. Rest and relax!</span></li>
+  </ul>
+
+  <div class="tip-box"><strong>Interfaith coordination tip:</strong> Meet with both the Hindu priest and Christian pastor together at least once (3 months out) to align on sequence, timings, and any shared ceremonial elements — this avoids surprises on the day.</div>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.closest('.tab').classList.add('active');
+}
+</script>
