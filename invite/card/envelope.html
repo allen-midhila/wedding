@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Allen &amp; Midhila — Wedding Invitation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #0a0a0a;
+    }
+
+    /* ── SCENE ─────────────────────────────────────────────── */
+    .scene {
+      position: fixed;
+      inset: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      overflow: hidden;
+    }
+
+    /* ── ENVELOPE EXTERIOR (red) ───────────────────────────── */
+    .env-ext {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(158deg, #C83030 0%, #AA1C1C 42%, #921515 100%);
+      z-index: 1;
+    }
+
+    /* ── FULL-SCREEN FLORAL SVG ─────────────────────────────── */
+    .env-floral {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ── ENVELOPE INTERIOR (cream) ─────────────────────────── */
+    .env-int {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(162deg, #FAF4EE 0%, #F3E8DA 50%, #ECDDD0 100%);
+      z-index: 4;
+      overflow: hidden;
+    }
+
+    /* Interior decorative cross-hatch lines */
+    .env-int::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 24px,
+          rgba(196,162,101,0.07) 24px,
+          rgba(196,162,101,0.07) 25px
+        ),
+        repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 24px,
+          rgba(196,162,101,0.07) 24px,
+          rgba(196,162,101,0.07) 25px
+        );
+      pointer-events: none;
+    }
+
+    /* ── INVITATION CARD (slides up) ───────────────────────── */
+    .inv-card {
+      position: absolute;
+      left: 4%; right: 4%;
+      bottom: -105%;
+      background: #fff;
+      box-shadow:
+        0 -14px 55px rgba(0,0,0,0.14),
+        0 -3px 12px rgba(0,0,0,0.09),
+        0 0 0 1px rgba(196,162,101,0.25);
+      border-radius: 2px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      max-height: 92%;
+      transition: bottom 1.5s cubic-bezier(0.34, 1.18, 0.64, 1) 2.1s;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(196,162,101,0.4) transparent;
+    }
+
+    .scene.opened .inv-card { bottom: 4%; }
+
+    .inv-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ── FLAP WRAPPER (perspective container) ──────────────── */
+    .flap-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      perspective: 1000px;
+      perspective-origin: 50% 0%;
+      pointer-events: none;
+    }
+
+    /* ── FLAP (3D rotating element) ────────────────────────── */
+    .flap {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 55%;
+      transform-origin: top center;
+      transform-style: preserve-3d;
+      transition: transform 1.55s cubic-bezier(0.7, 0, 0.25, 1) 0.38s;
+      will-change: transform;
+    }
+
+    .scene.opened .flap { transform: rotateX(-174deg); }
+
+    /* Shared face styles */
+    .flap-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    /* Front: same red as exterior; triangle clip pointing down */
+    .flap-front {
+      clip-path: polygon(0% 0%, 100% 0%, 52% 100%, 48% 100%);
+      background: linear-gradient(172deg, #C83030 0%, #AA1C1C 45%, #921515 100%);
+      overflow: hidden;
+    }
+
+    /* Back: cream colour, inverted clip so the Y-flip from rotateX(180deg)
+       makes it appear as the same downward triangle when revealed */
+    .flap-back {
+      clip-path: polygon(0% 100%, 100% 100%, 52% 0%, 48% 0%);
+      background: linear-gradient(8deg, #ECDDD0 0%, #F3E8DA 55%, #FAF4EE 100%);
+      transform: rotateX(180deg);
+    }
+
+    /* Shadow line at fold edge, visible while flap is partially open */
+    .flap-shadow {
+      position: absolute;
+      top: 55%;
+      left: 0; right: 0;
+      height: 22px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.18), transparent);
+      z-index: 9;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease 0.38s;
+    }
+
+    .scene.opened .flap-shadow { opacity: 1; }
+
+    /* ── WAX SEAL ───────────────────────────────────────────── */
+    .wax-seal {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 16;
+      width: clamp(74px, 22vw, 112px);
+      height: clamp(74px, 22vw, 112px);
+      pointer-events: none;
+      animation: sealGlow 3s ease-in-out infinite;
+      transition: opacity 0.4s ease 0.18s, transform 0.4s ease 0.18s;
+    }
+
+    @keyframes sealGlow {
+      0%, 100% {
+        filter:
+          drop-shadow(0 4px 12px rgba(0,0,0,0.5))
+          drop-shadow(0 0 4px rgba(240,210,100,0.2));
+      }
+      50% {
+        filter:
+          drop-shadow(0 4px 12px rgba(0,0,0,0.5))
+          drop-shadow(0 0 16px rgba(240,210,100,0.6));
+      }
+    }
+
+    .scene.opened .wax-seal {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.55);
+      animation: none;
+    }
+
+    /* ── TEXT OVERLAYS ──────────────────────────────────────── */
+    .tap-text,
+    .tagline {
+      position: absolute;
+      left: 0; right: 0;
+      text-align: center;
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(1.7rem, 7.5vw, 2.7rem);
+      color: rgba(255,255,255,0.93);
+      text-shadow: 0 2px 18px rgba(0,0,0,0.45);
+      z-index: 18;
+      pointer-events: none;
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .tap-text { top: 5.5%; }
+    .tagline  { bottom: 5.5%; }
+
+    .scene.opened .tap-text { opacity: 0; transform: translateY(-20px); }
+    .scene.opened .tagline  { opacity: 0; transform: translateY(20px); }
+
+    /* Subtle pulse on "Tap to Reveal" */
+    .tap-text { animation: tapPulse 2.2s ease-in-out infinite; }
+    @keyframes tapPulse {
+      0%, 100% { opacity: 0.93; }
+      50%       { opacity: 0.65; }
+    }
+    .scene.opened .tap-text { animation: none; }
+
+    /* ── RIPPLE EFFECT ──────────────────────────────────────── */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.11);
+      pointer-events: none;
+      z-index: 25;
+      animation: rippleOut 0.7s ease-out forwards;
+    }
+    @keyframes rippleOut {
+      from { transform: scale(0); opacity: 1; }
+      to   { transform: scale(5);  opacity: 0; }
+    }
+
+    /* ── SCROLL HINT ────────────────────────────────────────── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 1%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      opacity: 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: #8A6B72;
+      text-align: center;
+      pointer-events: none;
+      transition: opacity 0.7s ease 4s;
+      white-space: nowrap;
+    }
+    .scene.opened .scroll-hint { opacity: 0.6; }
+
+    .scroll-hint::after {
+      content: '▾';
+      display: block;
+      font-size: 1rem;
+      animation: scrollBounce 1.5s ease-in-out infinite;
+    }
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(4px); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="scene" id="scene">
+
+  <!-- Red envelope exterior background -->
+  <div class="env-ext"></div>
+
+  <!-- ── FLORAL / DECORATIVE SVG OVERLAY ────────────────────── -->
+  <svg class="env-floral" viewBox="0 0 390 844"
+       preserveAspectRatio="xMidYMid slice"
+       xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- Six-petal flower -->
+      <g id="F6">
+        <ellipse cx="0" cy="-10" rx="3.2" ry="7" opacity=".55"/>
+        <ellipse cx="0" cy="-10" rx="3.2" ry="7" transform="rotate(60)"  opacity=".55"/>
+        <ellipse cx="0" cy="-10" rx="3.2" ry="7" transform="rotate(120)" opacity=".55"/>
+        <ellipse cx="0" cy="-10" rx="3.2" ry="7" transform="rotate(180)" opacity=".55"/>
+        <ellipse cx="0" cy="-10" rx="3.2" ry="7" transform="rotate(240)" opacity=".55"/>
+        <ellipse cx="0" cy="-10" rx="3.2" ry="7" transform="rotate(300)" opacity=".55"/>
+        <circle  cx="0" cy="0"  r="3.8" opacity=".72"/>
+      </g>
+      <!-- Four-petal small flower -->
+      <g id="F4">
+        <ellipse cx="0" cy="-6"  rx="2.2" ry="4.8" opacity=".45"/>
+        <ellipse cx="0" cy="-6"  rx="2.2" ry="4.8" transform="rotate(90)"  opacity=".45"/>
+        <ellipse cx="0" cy="-6"  rx="2.2" ry="4.8" transform="rotate(45)"  opacity=".45"/>
+        <ellipse cx="0" cy="-6"  rx="2.2" ry="4.8" transform="rotate(135)" opacity=".45"/>
+        <circle  cx="0" cy="0"  r="2.5" opacity=".65"/>
+      </g>
+      <!-- Leaf pair -->
+      <g id="LP">
+        <ellipse cx="-4.5" cy="-5.5" rx="2" ry="5.5" transform="rotate(-28,-4.5,-5.5)" opacity=".38"/>
+        <ellipse cx=" 4.5" cy="-5.5" rx="2" ry="5.5" transform="rotate( 28, 4.5,-5.5)" opacity=".38"/>
+        <line x1="0" y1="0" x2="0" y2="-11" stroke-width=".55" opacity=".35"/>
+      </g>
+    </defs>
+
+    <!-- All drawn in a red-family colour that reads as embossed on the dark red bg -->
+    <g fill="rgba(220,100,100,.48)" stroke="rgba(255,160,140,.32)" stroke-width=".5">
+
+      <!-- TOP-LEFT corner cluster -->
+      <use href="#F6" transform="translate(30,30) scale(1.45)"/>
+      <use href="#F4" transform="translate(58,18)"/>
+      <use href="#F4" transform="translate(20,60)"/>
+      <use href="#LP" transform="translate(47,50) rotate(18)"/>
+      <path d="M14,14 Q36,33 28,57 Q20,82 44,100 Q60,114 52,138"
+            fill="none" stroke="rgba(255,145,125,.22)" stroke-width=".9"/>
+
+      <!-- TOP-RIGHT corner cluster -->
+      <use href="#F6" transform="translate(360,30) scale(1.45)"/>
+      <use href="#F4" transform="translate(332,18)"/>
+      <use href="#F4" transform="translate(370,60)"/>
+      <use href="#LP" transform="translate(343,50) rotate(-18)"/>
+      <path d="M376,14 Q354,33 362,57 Q370,82 346,100 Q330,114 338,138"
+            fill="none" stroke="rgba(255,145,125,.22)" stroke-width=".9"/>
+
+      <!-- TOP CENTER -->
+      <use href="#F6" transform="translate(195,16) scale(1.2)"/>
+      <use href="#F4" transform="translate(163,28) scale(.9)"/>
+      <use href="#F4" transform="translate(227,28) scale(.9)"/>
+      <path d="M148,20 Q170,38 195,32 Q220,26 242,42"
+            fill="none" stroke="rgba(255,145,125,.18)" stroke-width=".75"/>
+
+      <!-- BOTTOM-LEFT corner cluster -->
+      <use href="#F6" transform="translate(30,814) scale(1.45)"/>
+      <use href="#F4" transform="translate(58,826)"/>
+      <use href="#F4" transform="translate(20,784)"/>
+      <use href="#LP" transform="translate(47,794) rotate(198)"/>
+      <path d="M14,830 Q36,811 28,787 Q20,762 44,744 Q60,730 52,706"
+            fill="none" stroke="rgba(255,145,125,.22)" stroke-width=".9"/>
+
+      <!-- BOTTOM-RIGHT corner cluster -->
+      <use href="#F6" transform="translate(360,814) scale(1.45)"/>
+      <use href="#F4" transform="translate(332,826)"/>
+      <use href="#F4" transform="translate(370,784)"/>
+      <use href="#LP" transform="translate(343,794) rotate(-198)"/>
+      <path d="M376,830 Q354,811 362,787 Q370,762 346,744 Q330,730 338,706"
+            fill="none" stroke="rgba(255,145,125,.22)" stroke-width=".9"/>
+
+      <!-- BOTTOM CENTER -->
+      <use href="#F6" transform="translate(195,828) scale(1.2)"/>
+      <use href="#F4" transform="translate(163,816) scale(.9)"/>
+      <use href="#F4" transform="translate(227,816) scale(.9)"/>
+      <path d="M148,824 Q170,806 195,812 Q220,818 242,802"
+            fill="none" stroke="rgba(255,145,125,.18)" stroke-width=".75"/>
+
+      <!-- LEFT EDGE vine + small florals -->
+      <path d="M6,138 Q28,162 6,188 Q-14,214 10,240 Q30,266 6,292 Q-14,318 10,344
+               Q30,370 6,396 Q-14,422 10,448 Q30,474 6,500 Q-14,526 10,552
+               Q30,578 6,604 Q-14,630 10,656 Q30,682 6,708"
+            fill="none" stroke="rgba(255,140,118,.17)" stroke-width="1"/>
+      <use href="#F4" transform="translate(12,214) scale(.78)"/>
+      <use href="#F4" transform="translate(12,344) scale(.82)"/>
+      <use href="#F4" transform="translate(12,474) scale(.78)"/>
+      <use href="#F4" transform="translate(12,604) scale(.82)"/>
+      <use href="#LP"  transform="translate(12,280) rotate(90) scale(.8)"/>
+      <use href="#LP"  transform="translate(12,540) rotate(90) scale(.8)"/>
+
+      <!-- RIGHT EDGE vine + small florals -->
+      <path d="M384,138 Q362,162 384,188 Q404,214 380,240 Q360,266 384,292 Q404,318 380,344
+               Q360,370 384,396 Q404,422 380,448 Q360,474 384,500 Q404,526 380,552
+               Q360,578 384,604 Q404,630 380,656 Q360,682 384,708"
+            fill="none" stroke="rgba(255,140,118,.17)" stroke-width="1"/>
+      <use href="#F4" transform="translate(378,214) scale(.78)"/>
+      <use href="#F4" transform="translate(378,344) scale(.82)"/>
+      <use href="#F4" transform="translate(378,474) scale(.78)"/>
+      <use href="#F4" transform="translate(378,604) scale(.82)"/>
+      <use href="#LP"  transform="translate(378,280) rotate(-90) scale(.8)"/>
+      <use href="#LP"  transform="translate(378,540) rotate(-90) scale(.8)"/>
+
+      <!-- Scattered small accent flowers -->
+      <use href="#F4" transform="translate(88,148) scale(.7)"/>
+      <use href="#F4" transform="translate(302,148) scale(.7)"/>
+      <use href="#F4" transform="translate(88,696) scale(.7)"/>
+      <use href="#F4" transform="translate(302,696) scale(.7)"/>
+    </g>
+
+    <!-- Envelope fold lines: 4 diagonals from corners → centre ~55% (≈ 464 px) -->
+    <!-- Centre: (195, 464) -->
+    <g fill="none">
+      <!-- Shadow side of each fold -->
+      <line x1="0"   y1="0"   x2="195" y2="464" stroke="rgba(50,0,0,.3)"    stroke-width="1.1"/>
+      <line x1="390" y1="0"   x2="195" y2="464" stroke="rgba(50,0,0,.3)"    stroke-width="1.1"/>
+      <line x1="0"   y1="844" x2="195" y2="464" stroke="rgba(50,0,0,.28)"   stroke-width="1.1"/>
+      <line x1="390" y1="844" x2="195" y2="464" stroke="rgba(50,0,0,.28)"   stroke-width="1.1"/>
+      <!-- Light highlight on top-half folds (visible on flap) -->
+      <line x1="0"   y1="0"   x2="195" y2="464" stroke="rgba(255,210,190,.1)" stroke-width=".7"/>
+      <line x1="390" y1="0"   x2="195" y2="464" stroke="rgba(255,210,190,.1)" stroke-width=".7"/>
+    </g>
+  </svg>
+
+  <!-- ── ENVELOPE INTERIOR ──────────────────────────────────── -->
+  <div class="env-int">
+    <div class="inv-card" id="invCard">
+      <img src="Allen_Midhila_Inside.png"
+           alt="Allen &amp; Midhila — Wedding Invitation"
+           draggable="false"/>
+    </div>
+  </div>
+
+  <!-- Text overlays (on top of flap) -->
+  <div class="tap-text">Tap to Reveal</div>
+  <div class="tagline">To new beginnings!</div>
+
+  <!-- ── 3D FLAP ─────────────────────────────────────────────── -->
+  <div class="flap-wrap">
+    <div class="flap" id="flap">
+
+      <!-- Front face: red, same pattern as exterior -->
+      <div class="flap-face flap-front">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible"
+             viewBox="0 0 390 464"
+             preserveAspectRatio="xMidYMid slice"
+             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <!-- Reuse symbols defined in the outer SVG (same HTML document) -->
+          <g fill="rgba(220,100,100,.48)" stroke="rgba(255,160,140,.32)" stroke-width=".5">
+            <use href="#F6" transform="translate(30,30) scale(1.45)"/>
+            <use href="#F4" transform="translate(58,18)"/>
+            <use href="#F4" transform="translate(20,60)"/>
+            <use href="#LP" transform="translate(47,50) rotate(18)"/>
+            <path d="M14,14 Q36,33 28,57 Q20,82 44,100"
+                  fill="none" stroke="rgba(255,145,125,.22)" stroke-width=".9"/>
+
+            <use href="#F6" transform="translate(360,30) scale(1.45)"/>
+            <use href="#F4" transform="translate(332,18)"/>
+            <use href="#F4" transform="translate(370,60)"/>
+            <use href="#LP" transform="translate(343,50) rotate(-18)"/>
+            <path d="M376,14 Q354,33 362,57 Q370,82 346,100"
+                  fill="none" stroke="rgba(255,145,125,.22)" stroke-width=".9"/>
+
+            <use href="#F6" transform="translate(195,16) scale(1.2)"/>
+            <use href="#F4" transform="translate(163,28) scale(.9)"/>
+            <use href="#F4" transform="translate(227,28) scale(.9)"/>
+          </g>
+          <!-- Top-half fold lines duplicated on flap face -->
+          <g fill="none">
+            <line x1="0"   y1="0" x2="195" y2="464" stroke="rgba(50,0,0,.28)"    stroke-width="1.1"/>
+            <line x1="390" y1="0" x2="195" y2="464" stroke="rgba(50,0,0,.28)"    stroke-width="1.1"/>
+            <line x1="0"   y1="0" x2="195" y2="464" stroke="rgba(255,210,190,.09)" stroke-width=".7"/>
+            <line x1="390" y1="0" x2="195" y2="464" stroke="rgba(255,210,190,.09)" stroke-width=".7"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Back face: cream underside of flap -->
+      <div class="flap-face flap-back"></div>
+    </div>
+  </div>
+
+  <!-- Shadow cast by open flap onto interior -->
+  <div class="flap-shadow"></div>
+
+  <!-- ── WAX SEAL ───────────────────────────────────────────── -->
+  <div class="wax-seal" id="seal" aria-label="Wax seal: A &amp; M">
+    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="sg" cx="36%" cy="30%" r="68%">
+          <stop offset="0%"   stop-color="#F8E298"/>
+          <stop offset="52%"  stop-color="#DFB948"/>
+          <stop offset="100%" stop-color="#C09828"/>
+        </radialGradient>
+        <radialGradient id="si" cx="42%" cy="36%" r="62%">
+          <stop offset="0%"   stop-color="#F2D268"/>
+          <stop offset="100%" stop-color="#C49020"/>
+        </radialGradient>
+        <filter id="sdrp" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="4" stdDeviation="5.5" flood-color="rgba(0,0,0,.58)"/>
+        </filter>
+      </defs>
+
+      <!-- Outer wax body -->
+      <circle cx="60" cy="60" r="57" fill="url(#sg)" filter="url(#sdrp)"/>
+
+      <!-- Rope / beaded border -->
+      <circle cx="60" cy="60" r="52" fill="none"
+              stroke="#A88020" stroke-width="3.8"
+              stroke-dasharray="5.2 2.8" stroke-linecap="round"/>
+
+      <!-- Inner disc -->
+      <circle cx="60" cy="60" r="47" fill="url(#si)"/>
+      <circle cx="60" cy="60" r="44" fill="none" stroke="#9A7010" stroke-width=".9" opacity=".7"/>
+
+      <!-- Decorative dot at cardinal points -->
+      <circle cx="60"  cy="13"  r="2.8" fill="#9A7010" opacity=".62"/>
+      <circle cx="107" cy="60"  r="2.8" fill="#9A7010" opacity=".62"/>
+      <circle cx="60"  cy="107" r="2.8" fill="#9A7010" opacity=".62"/>
+      <circle cx="13"  cy="60"  r="2.8" fill="#9A7010" opacity=".62"/>
+
+      <!-- Small decorative arcs beside monogram -->
+      <path d="M 28,53 Q 22,60 28,67" stroke="#9A7010" stroke-width=".9" fill="none" opacity=".55"/>
+      <path d="M 92,53 Q 98,60 92,67" stroke="#9A7010" stroke-width=".9" fill="none" opacity=".55"/>
+
+      <!-- Thin rule lines flanking & symbol -->
+      <line x1="28" y1="53" x2="46" y2="53" stroke="#8A6010" stroke-width=".7" opacity=".52"/>
+      <line x1="74" y1="53" x2="92" y2="53" stroke="#8A6010" stroke-width=".7" opacity=".52"/>
+      <line x1="28" y1="67" x2="46" y2="67" stroke="#8A6010" stroke-width=".7" opacity=".52"/>
+      <line x1="74" y1="67" x2="92" y2="67" stroke="#8A6010" stroke-width=".7" opacity=".52"/>
+
+      <!-- A & M monogram -->
+      <text x="60" y="50"
+            text-anchor="middle" dominant-baseline="middle"
+            font-family="Georgia, 'Times New Roman', serif"
+            font-size="22" font-weight="bold" font-style="italic"
+            fill="#5C3E00">A</text>
+      <text x="60" y="63"
+            text-anchor="middle" dominant-baseline="middle"
+            font-family="'Cormorant Garamond', Georgia, serif"
+            font-size="11" font-style="italic" fill="#6E5000" opacity=".88">&amp;</text>
+      <text x="60" y="76"
+            text-anchor="middle" dominant-baseline="middle"
+            font-family="Georgia, 'Times New Roman', serif"
+            font-size="22" font-weight="bold" font-style="italic"
+            fill="#5C3E00">M</text>
+    </svg>
+  </div>
+
+  <!-- Scroll hint, visible after card appears -->
+  <div class="scroll-hint">scroll</div>
+
+</div><!-- /.scene -->
+
+<script>
+  const scene = document.getElementById('scene');
+  let opened = false;
+
+  function openEnvelope(e) {
+    if (opened) return;
+    opened = true;
+
+    /* Ripple at tap / click point */
+    const cx = (e.changedTouches ? e.changedTouches[0].clientX : e.clientX);
+    const cy = (e.changedTouches ? e.changedTouches[0].clientY : e.clientY);
+    const size = Math.max(window.innerWidth, window.innerHeight) * 1.6;
+    const r = document.createElement('div');
+    r.className = 'ripple';
+    Object.assign(r.style, {
+      width:  size + 'px',
+      height: size + 'px',
+      left:   (cx - size / 2) + 'px',
+      top:    (cy - size / 2) + 'px',
+    });
+    scene.appendChild(r);
+    setTimeout(() => r.remove(), 800);
+
+    scene.classList.add('opened');
+  }
+
+  scene.addEventListener('click',    openEnvelope);
+  scene.addEventListener('touchend', (e) => { e.preventDefault(); openEnvelope(e); },
+    { passive: false });
+</script>
+
+</body>
+</html>
