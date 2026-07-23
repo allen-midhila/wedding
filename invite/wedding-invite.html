@@ -533,6 +533,81 @@
   }
 
   .actions{ margin-top: 30px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .rsvp-form-card{
+    margin: 18px auto 0;
+    max-width: 520px;
+    text-align:left;
+    background: var(--cream);
+    border: 1px solid rgba(201,162,39,0.3);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .rsvp-form-card .k{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color: var(--wine);
+    margin-bottom:10px;
+  }
+  .rsvp-form-grid{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:10px;
+  }
+  .rsvp-input{
+    width:100%;
+    border:1px solid rgba(107,30,43,0.2);
+    border-radius:10px;
+    background:#fff;
+    font-family:'Literata', serif;
+    font-size:15px;
+    color:var(--ink);
+    padding:11px 12px;
+    outline:none;
+  }
+  .rsvp-input:focus{ border-color: var(--wine); box-shadow: 0 0 0 3px rgba(107,30,43,0.12); }
+  .rsvp-choice-row{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:8px;
+    margin-top: 2px;
+  }
+  .rsvp-choice{
+    text-align:left;
+    font-family:'Literata', serif;
+    font-size:15px;
+    text-transform:none;
+    letter-spacing:0;
+    padding:12px 14px;
+    border-radius:10px;
+    background:#fff;
+    color:#6b4f46;
+    box-shadow: inset 0 0 0 1.5px rgba(107,30,43,0.25);
+  }
+  .rsvp-choice.active{
+    background: var(--wine);
+    color: var(--paper);
+    box-shadow: inset 0 0 0 1.5px var(--wine);
+  }
+  .rsvp-submit{
+    margin-top: 12px;
+    width:100%;
+  }
+  .rsvp-form-msg{
+    margin-top:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:#8a7a63;
+    letter-spacing:0.02em;
+  }
+  .rsvp-success{
+    margin-top: 10px;
+    font-style: italic;
+    color: var(--wine-deep);
+    display:none;
+  }
+  .rsvp-success.show{ display:block; }
   .rsvp-note{
     margin-top: 14px;
     font-family:'IBM Plex Mono', monospace;
@@ -733,10 +808,26 @@
     </div>
 
     <div class="actions">
-      <a class="btn" id="rsvp-btn" href="#">RSVP</a>
       <a class="btn" id="calendar-btn" href="#">Add to calendar</a>
       <button class="secondary" id="replay-btn">Play again</button>
     </div>
+
+    <form class="rsvp-form-card" id="rsvp-form">
+      <div class="k">RSVP</div>
+      <div class="rsvp-form-grid">
+        <input class="rsvp-input" id="rsvp-name" type="text" placeholder="Your name" required>
+        <input class="rsvp-input" id="rsvp-guests" type="number" min="1" max="10" placeholder="Number of guests (including you)">
+        <div class="rsvp-choice-row" id="rsvp-choice-row" role="group" aria-label="Attendance choice">
+          <button type="button" class="rsvp-choice" data-choice="Definetly will be there">Definetly will be there</button>
+          <button type="button" class="rsvp-choice" data-choice="Can't make it, but will send gifts!">Can't make it, but will send gifts!</button>
+        </div>
+        <input id="rsvp-choice" type="hidden" required>
+      </div>
+      <button class="btn rsvp-submit" type="submit">Send RSVP</button>
+      <p class="rsvp-form-msg" id="rsvp-form-msg">Please RSVP by Aug 10, 2026</p>
+      <p class="rsvp-success" id="rsvp-success">Thank you. Your RSVP has been noted.</p>
+    </form>
+
     <p class="rsvp-note" id="rsvp-note"></p>
 
     <p class="footer-note">Christian Holy Matrimony (Mar Thoma) · Aug 24, 2026 · Kerala, India</p>
@@ -790,9 +881,11 @@
     receptionVenueLine: "Church Parish Hall",
     receptionTimeLabel: "Immediately after ceremony",
     rsvpDeadlineLabel: "Please RSVP by Aug 10, 2026",
-    rsvpEmail: "weddingrsvp@example.com",
-    rsvpPhoneDisplay: "+91 90000 00000",
-    rsvpPhoneHref: "+919000000000",
+    rsvpEmail: "allen.abraham05@gmail.com",
+    rsvpPhoneDisplay1: "+971-585954112",
+    rsvpPhoneHref1: "+971585954112",
+    rsvpPhoneDisplay2: "+91-9895987872",
+    rsvpPhoneHref2: "+919895987872",
   };
   document.getElementById('ceremony-detail').innerHTML =
     CONFIG.ceremonyVenueLine + '<small id="ceremony-time"></small>';
@@ -801,14 +894,41 @@
     CONFIG.receptionVenueLine + '<small id="reception-time"></small>';
   document.getElementById('reception-time').textContent = CONFIG.receptionTimeLabel;
 
-  const rsvpSubject = encodeURIComponent("RSVP - Allen & Midhila Wedding");
-  const rsvpBody = encodeURIComponent("Name(s):%0AWill attend: Yes / No%0ANumber of guests:%0ADietary notes:");
-  const rsvpEmailHref = 'mailto:' + CONFIG.rsvpEmail + '?subject=' + rsvpSubject + '&body=' + rsvpBody;
-  document.getElementById('rsvp-btn').setAttribute('href', rsvpEmailHref);
+  const rsvpFormEl = document.getElementById('rsvp-form');
+  const rsvpNameEl = document.getElementById('rsvp-name');
+  const rsvpGuestsEl = document.getElementById('rsvp-guests');
+  const rsvpChoiceEl = document.getElementById('rsvp-choice');
+  const rsvpSuccessEl = document.getElementById('rsvp-success');
+  const rsvpChoiceButtons = Array.from(document.querySelectorAll('.rsvp-choice'));
+
+  document.getElementById('rsvp-form-msg').textContent = CONFIG.rsvpDeadlineLabel;
   document.getElementById('rsvp-note').innerHTML =
     CONFIG.rsvpDeadlineLabel +
     ' · Email: <a href="mailto:' + CONFIG.rsvpEmail + '">' + CONFIG.rsvpEmail + '</a>' +
-    ' · Call/WhatsApp: <a href="https://wa.me/' + CONFIG.rsvpPhoneHref.replace(/^\+/, '') + '">' + CONFIG.rsvpPhoneDisplay + '</a>';
+    ' · Call/WhatsApp: <a href="tel:' + CONFIG.rsvpPhoneHref1 + '">' + CONFIG.rsvpPhoneDisplay1 + '</a>' +
+    ' / <a href="tel:' + CONFIG.rsvpPhoneHref2 + '">' + CONFIG.rsvpPhoneDisplay2 + '</a>';
+
+  rsvpChoiceButtons.forEach((btn)=>{
+    btn.addEventListener('click', ()=>{
+      const selected = btn.getAttribute('data-choice') || '';
+      rsvpChoiceEl.value = selected;
+      rsvpChoiceButtons.forEach((b)=> b.classList.toggle('active', b === btn));
+    });
+  });
+
+  rsvpFormEl.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    if (!rsvpNameEl.value.trim()) return;
+    if (!rsvpChoiceEl.value) return;
+
+    const note = [
+      'Name: ' + rsvpNameEl.value.trim(),
+      'Choice: ' + rsvpChoiceEl.value,
+      'Guests: ' + (rsvpGuestsEl.value || 'Not provided')
+    ].join(' | ');
+    rsvpFormEl.setAttribute('data-last-rsvp', note);
+    rsvpSuccessEl.classList.add('show');
+  });
 
   const MOMENT_PHOTOS = [
     "images/photo-1.jpeg",
