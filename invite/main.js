@@ -2,15 +2,57 @@
 /* ---------- Door intro ---------- */
 const intro = document.getElementById('intro');
 const main = document.getElementById('main');
+const bgMusic = document.getElementById('bg-music');
 let opened = false;
+
+if ('scrollRestoration' in history){
+  history.scrollRestoration = 'manual';
+}
+
+function resetScrollToTop(){
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
+
+resetScrollToTop();
+window.addEventListener('load', resetScrollToTop);
+
+function startBackgroundMusic(){
+  if (!bgMusic) return;
+  bgMusic.volume = 0.35;
+  const playAttempt = bgMusic.play();
+  if (playAttempt && typeof playAttempt.catch === 'function'){
+    playAttempt.catch(()=>{
+      // If autoplay is blocked, retry on first explicit user interaction.
+      const resumeOnInteraction = ()=>{
+        bgMusic.play().catch(()=>{});
+        window.removeEventListener('click', resumeOnInteraction);
+        window.removeEventListener('touchstart', resumeOnInteraction);
+        window.removeEventListener('keydown', resumeOnInteraction);
+      };
+      window.addEventListener('click', resumeOnInteraction, {once:true});
+      window.addEventListener('touchstart', resumeOnInteraction, {once:true, passive:true});
+      window.addEventListener('keydown', resumeOnInteraction, {once:true});
+    });
+  }
+}
+
 function openDoors(){
   if(opened) return;
   opened = true;
+  resetScrollToTop();
+  requestAnimationFrame(resetScrollToTop);
   intro.classList.add('opened');
   main.classList.add('visible');
   /* keep scroll locked until the walk-through zoom completes */
-  setTimeout(()=>{ document.body.classList.remove('locked'); }, 4300);
+  setTimeout(()=>{
+    resetScrollToTop();
+    document.body.classList.remove('locked');
+    setTimeout(resetScrollToTop, 0);
+  }, 4300);
   startPetals();
+  startBackgroundMusic();
 }
 intro.addEventListener('click', openDoors);
 intro.addEventListener('touchend', openDoors, {passive:true});
