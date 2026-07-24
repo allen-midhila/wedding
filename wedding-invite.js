@@ -657,7 +657,7 @@
     playWinningTone();
     showOverlay('You are invited!', 'Allen made it to Midhila. The celebration awaits.', 'Open invitation', ()=>{
       hideOverlay();
-      window.location.href = 'index.html';
+      window.location.href = 'invite.html';
     }, {variant:'game-win'});
   }
 
@@ -750,7 +750,7 @@
   document.getElementById('skip-game-btn').addEventListener('click', ()=>{
     running = false;
     stopArcadeMusic();
-    window.location.href = 'index.html';
+    window.location.href = 'invite.html';
   });
 
   /* =====================================================
