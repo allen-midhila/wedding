@@ -263,7 +263,7 @@
   const GHOST_SPAWNS = pickGhostSpawns();
   const GHOST_DEFS = [
     {emoji:'🏢', name:'AGX Office'},
-    {img:grandfatherImg, name:"Gen A's advise"},
+    {img:grandfatherImg, name:"Gen A's advice"},
     {emoji:'🌧️', name:'Monsoon'},
   ];
 
@@ -503,7 +503,15 @@
         gameOverFlag = true;
         stopArcadeMusic();
         playLosingTone();
-        showOverlay('Game Over', "The day's chaos finally caught up with him. Take a breath and try again.", 'Play again', ()=>{ resetEntities(); hideOverlay(); }, {variant:'game-over'});
+        showOverlay('Game Over', "The day's chaos finally caught up with him. Take a breath and try again.", 'Play again', ()=>{
+          resetEntities();
+          gameOverFlag = false;
+          running = true;
+          lastTime = null;
+          tickAccum = 0;
+          startArcadeMusic();
+          hideOverlay();
+        }, {variant:'game-over'});
       } else {
         playCaughtTone();
         showOverlay('Caught!', "Almost — " + (ghosts.find(g=>g.x===player.x&&g.y===player.y).def.name) + " got in the way. " + lives + " " + (lives===1?'life':'lives') + " left.", 'Continue', ()=>{
@@ -687,6 +695,7 @@
   bindHold('dpad-left','left'); bindHold('dpad-right','right');
 
   let touchStart = null;
+  let canvasTouchBound = false;
 
   /* =====================================================
      SCREEN MANAGEMENT
@@ -699,7 +708,7 @@
     if (id !== 'game-screen') stopArcadeMusic();
   }
 
-  document.getElementById('start-btn').addEventListener('click', ()=>{
+  function startGameSession(){
     switchScreen('game-screen');
     canvas = document.getElementById('maze-canvas');
     ctx = canvas.getContext('2d');
@@ -708,31 +717,34 @@
     running = true; gameOverFlag = false; lastTime = null; tickAccum = 0;
     startArcadeMusic();
 
-    canvas.addEventListener('touchstart', (e)=>{
-      const t = e.changedTouches[0];
-      touchStart = {x:t.clientX, y:t.clientY};
-    }, {passive:true});
-    canvas.addEventListener('touchend', (e)=>{
-      if (!touchStart) return;
-      const t = e.changedTouches[0];
-      const dx = t.clientX - touchStart.x, dy = t.clientY - touchStart.y;
-      if (Math.abs(dx) > Math.abs(dy)){
-        queuedDir = dx > 0 ? 'right' : 'left';
-      } else {
-        queuedDir = dy > 0 ? 'down' : 'up';
-      }
-      touchStart = null;
-    }, {passive:true});
+    if (!canvasTouchBound){
+      canvas.addEventListener('touchstart', (e)=>{
+        const t = e.changedTouches[0];
+        touchStart = {x:t.clientX, y:t.clientY};
+      }, {passive:true});
+      canvas.addEventListener('touchend', (e)=>{
+        if (!touchStart) return;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - touchStart.x, dy = t.clientY - touchStart.y;
+        if (Math.abs(dx) > Math.abs(dy)){
+          queuedDir = dx > 0 ? 'right' : 'left';
+        } else {
+          queuedDir = dy > 0 ? 'down' : 'up';
+        }
+        touchStart = null;
+      }, {passive:true});
+      canvasTouchBound = true;
+    }
 
     requestAnimationFrame(loop);
+  }
+
+  document.getElementById('start-btn').addEventListener('click', ()=>{
+    startGameSession();
   });
 
   document.getElementById('replay-btn').addEventListener('click', ()=>{
-    switchScreen('game-screen');
-    resetEntities();
-    running = true; gameOverFlag = false; lastTime = null; tickAccum = 0;
-    startArcadeMusic();
-    requestAnimationFrame(loop);
+    startGameSession();
   });
 
   document.getElementById('skip-game-btn').addEventListener('click', ()=>{
