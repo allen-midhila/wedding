@@ -27,6 +27,11 @@ body.locked{overflow:hidden;height:100vh;}
   color:var(--rose-deep);font-weight:500;
 }
 .script{font-family:'Great Vibes',cursive;font-weight:400;}
+.couple-name{
+  font-family:'Alex Brush', 'Great Vibes', cursive;
+  font-weight:400;
+  letter-spacing:.01em;
+}
 
 /* ================= DOOR INTRO ================= */
 #intro{
