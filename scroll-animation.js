@@ -120,3 +120,50 @@
     requestDraw();
   });
 })();
+
+(() => {
+  function initStars() {
+    const starField = document.getElementById("stars");
+    if (!starField) {
+      return;
+    }
+
+    const count = 70;
+    for (let i = 0; i < count; i += 1) {
+      const star = document.createElement("span");
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 4}s`;
+      star.style.opacity = (0.2 + Math.random() * 0.6).toFixed(2);
+      starField.appendChild(star);
+    }
+  }
+
+  function fillRow(id, cssVars, rootStyles) {
+    const row = document.getElementById(id);
+    if (!row) {
+      return;
+    }
+
+    cssVars.forEach((cssVar) => {
+      const swatch = document.createElement("div");
+      swatch.className = "swatch";
+      swatch.style.background = rootStyles.getPropertyValue(cssVar).trim();
+      row.appendChild(swatch);
+    });
+  }
+
+  function initPalette() {
+    const rootStyles = getComputedStyle(document.documentElement);
+    const greens = ["--green-1", "--green-2", "--green-3", "--green-4", "--green-5", "--green-6", "--green-7"];
+    const pinks = ["--pink-1", "--pink-2", "--pink-3", "--pink-4", "--pink-5", "--pink-6", "--pink-7"];
+
+    fillRow("greenRow", greens, rootStyles);
+    fillRow("pinkRow", pinks, rootStyles);
+  }
+
+  window.addEventListener("load", () => {
+    initStars();
+    initPalette();
+  });
+})();

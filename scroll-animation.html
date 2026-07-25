@@ -3,11 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scroll Frame Animation</title>
+  <title>Sangeet Night - Midhila &amp; Allen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Cormorant+SC:wght@500;700&family=Marck+Script&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="scroll-animation.css">
 </head>
 <body>
   <canvas id="frame-canvas" aria-label="Scroll animation"></canvas>
+  <div class="stars" id="stars" aria-hidden="true"></div>
+
+  <section class="hero">
+    <svg class="chandelier" viewBox="0 0 300 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M150 0 L150 22" stroke="var(--gold)" stroke-width="1"/>
+      <circle cx="150" cy="26" r="4" fill="var(--gold-soft)"/>
+      <path d="M40 30 Q150 -10 260 30" stroke="var(--gold-dim)" stroke-width="1" fill="none"/>
+      <path d="M60 32 Q150 5 240 32" stroke="var(--gold)" stroke-width="1" fill="none"/>
+      <g stroke="var(--gold)" stroke-width="1">
+        <path d="M75 32 L70 60"/>
+        <path d="M112 26 L108 58"/>
+        <path d="M150 24 L150 62"/>
+        <path d="M188 26 L192 58"/>
+        <path d="M225 32 L230 60"/>
+      </g>
+      <g fill="var(--gold-soft)">
+        <circle cx="70" cy="63" r="3"/>
+        <circle cx="108" cy="61" r="3"/>
+        <circle cx="150" cy="65" r="3.4"/>
+        <circle cx="192" cy="61" r="3"/>
+        <circle cx="230" cy="63" r="3"/>
+      </g>
+    </svg>
+
+    <p class="eyebrow">Join us under the stars for our</p>
+    <h1 class="names">Sangeet Night</h1>
+    <p class="tagline">Midhila &amp; Allen joyfully invite you to celebrate an evening of<br>music, dance &amp; togetherness.</p>
+
+    <div class="date-badge">
+      <span>Saturday</span>
+      <span class="day">15</span>
+      <span>August, 2026 · 6:30 PM</span>
+    </div>
+
+    <p class="venue">
+      <strong>Sydney Hall, Park Regis Kris Kin Hotel</strong>
+      <small>Opp. Burjuman, Dubai</small>
+    </p>
+
+    <p class="rsvp-note">Your presence will make our celebration truly special.<br>We look forward to celebrating with you.</p>
+
+    <div class="portrait-wrap">
+      <p class="caption">- under a sky full of promises -</p>
+    </div>
+  </section>
+
+  <div class="ornament-divider">
+    <span class="line"></span>
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+      <circle cx="18" cy="18" r="4" fill="var(--gold)"/>
+      <path d="M18 4 L18 12 M18 24 L18 32 M4 18 L12 18 M24 18 L32 18" stroke="var(--gold-dim)" stroke-width="1"/>
+    </svg>
+    <span class="line"></span>
+  </div>
+
+  <section>
+    <p class="quote-block">Yes, time to show up<br>with full energy!</p>
+
+    <div class="dresscode">
+      <h2>Dress Code</h2>
+
+      <div class="palette-row" id="greenRow"></div>
+      <p class="palette-label green">Pastel Green</p>
+
+      <div class="palette-row" id="pinkRow"></div>
+      <p class="palette-label pink">Pink</p>
+    </div>
+
+    <ul class="directives">
+      <li>Cheer for Team Bride &amp; Team Groom</li>
+      <li>Eat like it's your cheat day</li>
+      <li>Laugh until your cheeks hurt</li>
+      <li>Make memories we'll never forget</li>
+    </ul>
+
+    <p class="closing-verse">
+      The pages may turn, the day may end, but what we built together<br>
+      will stay written in memory.<br>
+      We can't wait to celebrate with you.
+      <span class="sign">Midhila &amp; Allen</span>
+    </p>
+  </section>
+
+  <footer>Sangeet Night · 15 August 2026 · Dubai</footer>
+
   <div id="scroll-track" aria-hidden="true"></div>
   <script src="scroll-animation.js"></script>
 </body>
