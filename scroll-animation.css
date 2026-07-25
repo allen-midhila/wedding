@@ -35,6 +35,7 @@ html {
 }
 
 body {
+  position: relative;
   margin: 0;
   overflow-x: hidden;
   color: var(--ivory);
@@ -42,6 +43,17 @@ body {
   background:
     radial-gradient(ellipse 900px 500px at 50% -10%, #232a67 0%, transparent 60%),
     linear-gradient(180deg, var(--navy-deep) 0%, var(--navy) 45%, var(--navy-deep) 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(6, 8, 22, 0.46) 0%, rgba(6, 8, 22, 0.36) 36%, rgba(6, 8, 22, 0.52) 100%),
+    radial-gradient(ellipse 120% 70% at 50% 8%, rgba(25, 34, 84, 0.24) 0%, rgba(6, 8, 22, 0) 70%);
 }
 
 #frame-canvas {
@@ -77,7 +89,104 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+}
+
+#intro-section {
+  height: 700px;
+  min-height: 700px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: clamp(18px, 4vh, 40px) 28px 0;
+}
+
+.intro-text-area {
+  display: inline-block;
+  margin: 0 auto;
+  padding: 14px 22px 12px;
+  border-radius: 12px;
+  background: rgba(7, 10, 28, 0.5);
+  border: 1px solid rgba(232, 211, 171, 0.2);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(2px);
+}
+
+#details-section {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(24px);
+  pointer-events: none;
+  transition: opacity 340ms ease, transform 340ms ease, visibility 340ms ease;
+}
+
+#details-section .hero-details {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px 28px 0;
+  text-align: center;
+}
+
+#details-section.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+#intro-section {
+  opacity: 0;
+  visibility: visible;
+  transform: translateY(0);
+  transition: opacity 340ms ease, transform 340ms ease, visibility 340ms ease;
+}
+
+#intro-section.is-inactive {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-18px);
+  pointer-events: none;
+}
+
+#intro-tagline-section {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 8px 28px 18px;
+  text-align: center;
+  border-radius: 12px;
+  background: rgba(7, 10, 28, 0.48);
+  border: 1px solid rgba(232, 211, 171, 0.16);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: visible;
+  transform: translateY(0);
+  transition: opacity 340ms ease, transform 340ms ease, visibility 340ms ease;
+}
+
+#intro-tagline-section .intro-names {
+  margin: 0;
+  font-family: "Cormorant SC", serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 6.6vw, 3.3rem);
+  letter-spacing: 0.07em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #fff 0%, var(--gold-soft) 55%, var(--gold-dim) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 20px rgba(6, 7, 20, 0.95), 0 0 40px rgba(212, 180, 131, 0.28);
+  -webkit-text-stroke: 0.5px rgba(8, 10, 30, 0.45);
+}
+
+#intro-tagline-section.is-inactive {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-14px);
+  pointer-events: none;
 }
 
 @keyframes twinkle {
@@ -122,38 +231,43 @@ section {
 }
 
 .eyebrow {
-  font-family: "Marck Script", cursive;
-  font-size: clamp(1.6rem, 4vw, 2.1rem);
-  color: var(--gold-soft);
-  letter-spacing: 0.5px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1rem, 2.4vw, 1.25rem);
+  color: var(--cream);
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.95;
   margin: 0 0 6px;
+  text-shadow: 0 2px 16px rgba(6, 7, 20, 0.98);
 }
 
 h1.names {
   font-family: "Cormorant SC", serif;
   font-weight: 700;
-  font-size: clamp(2.6rem, 8vw, 4.6rem);
+  font-size: clamp(2.6rem, 8vw, 3.0rem);
   letter-spacing: 0.06em;
   margin: 0;
   background: linear-gradient(180deg, #fff 0%, var(--gold-soft) 55%, var(--gold-dim) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 0 40px rgba(212, 180, 131, 0.25);
+  text-shadow: 0 2px 18px rgba(6, 7, 20, 0.9), 0 0 40px rgba(212, 180, 131, 0.25);
 }
 
 .tagline {
-  font-size: clamp(1rem, 2.4vw, 1.25rem);
-  color: var(--cream);
+  font-size: clamp(0.98rem, 2.2vw, 1.22rem);
+  color: var(--ivory);
   font-style: italic;
-  opacity: 0.85;
+  opacity: 0.94;
   max-width: 480px;
-  margin: 14px auto 0;
+  margin: 10px auto 0;
   line-height: 1.6;
+  text-shadow: 0 2px 14px rgba(6, 7, 20, 0.95);
 }
 
 .hero {
-  padding-top: 56px;
+  padding-top: 0;
 }
 
 .chandelier {
@@ -414,6 +528,14 @@ footer {
 }
 
 @media (max-width: 480px) {
+  #intro-tagline-section {
+    padding: 6px 20px 14px;
+  }
+
+  #details-section .hero-details {
+    padding: 14px 20px 0;
+  }
+
   section {
     padding: 48px 20px;
   }

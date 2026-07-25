@@ -1,0 +1,151 @@
+:root {
+  --bg: #060606;
+  --ink: #f6efe2;
+  --gold: #d8b26a;
+  --muted: rgba(246, 239, 226, 0.72);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  background: var(--bg);
+}
+
+body {
+  overflow-x: hidden;
+}
+
+#frame-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  background: var(--bg);
+}
+
+#scroll-track {
+  width: 1px;
+  height: 100vh;
+}
+
+/* ---- Wedding invite overlay ---- */
+#invite-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.invite-section {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  text-align: center;
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(40px);
+  will-change: opacity, transform;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 2px 24px rgba(0, 0, 0, 0.75);
+  /* Width of the text column: fit inside the letterboxed video frame. */
+  --content-w: min(90vw, calc(var(--frame-w, 90vw) - 8vw));
+}
+
+/* Readability scrim that darkens the busy background directly behind the text.
+   Lives on the section so it fades in/out together with the content. */
+.invite-section::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(96vw, calc(var(--frame-w, 96vw) + 2vw));
+  height: min(80vh, calc(var(--frame-h, 80vh) * 0.7));
+  background: radial-gradient(
+    ellipse 60% 50% at center,
+    rgba(6, 6, 6, 0.72) 0%,
+    rgba(6, 6, 6, 0.5) 45%,
+    rgba(6, 6, 6, 0) 75%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+.invite-section > * {
+  position: relative;
+  z-index: 1;
+  max-width: var(--content-w);
+  overflow-wrap: break-word;
+}
+
+.invite-section .eyebrow {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(0.75rem, calc(var(--frame-w, 90vw) * 0.032), 1.1rem);
+  letter-spacing: 0.28em;
+  /* pull the trailing tracking back so centering stays true */
+  text-indent: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.invite-section .ornament {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  color: var(--gold);
+}
+
+.invite-section .lede {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.invite-section .names {
+  margin: 0.2rem 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  /* Sized off the video frame width so long names never spill past the frame. */
+  font-size: clamp(1.9rem, calc(var(--frame-w, 90vw) * 0.11), 4.4rem);
+  line-height: 1.08;
+  letter-spacing: 0;
+  hyphens: auto;
+}
+
+.invite-section .names .amp {
+  display: block;
+  margin: 0.25rem 0;
+  font-size: 0.5em;
+  font-style: italic;
+  color: var(--gold);
+}
+
+.invite-section .headline {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-size: clamp(1.4rem, calc(var(--frame-w, 90vw) * 0.07), 2.8rem);
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invite-section {
+    transition: none;
+    transform: none;
+  }
+}

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sangeet Night - Midhila & Allen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --pastel-pink: #f8d7da;
+            --pastel-green: #d4edda;
+            --dark-pink: #d63384;
+            --dark-green: #2d5a27;
+            --gold: #d4af37;
+            --text-dark: #2c3e50;
+            --bg-dark: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            max-width: 600px;
+            width: 100%;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stars {
+            color: var(--gold);
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            margin-bottom: 10px;
+        }
+
+        .sub-header {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            font-weight: normal;
+        }
+
+        .names {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            letter-spacing: 4px;
+            color: #ffffff;
+            margin: 20px 0;
+            text-transform: uppercase;
+        }
+
+        .names span {
+            color: var(--gold);
+        }
+
+        .invitation-text {
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .event-details {
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 25px 0;
+            margin: 25px 0;
+        }
+
+        .date-time {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .date-box {
+            font-family: 'Cinzel', serif;
+        }
+
+        .day {
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: #cbd5e1;
+        }
+
+        .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .month-year {
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: #cbd5e1;
+        }
+
+        .divider {
+            width: 1px;
+            height: 40px;
+            background: rgba(212, 175, 55, 0.4);
+        }
+
+        .time {
+            font-size: 1.2rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .location {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #f1f5f9;
+        }
+
+        .venue-name {
+            font-weight: 600;
+            color: var(--gold);
+            font-size: 1.1rem;
+        }
+
+        .dress-code-box {
+            background: linear-gradient(135deg, rgba(248, 215, 218, 0.15), rgba(212, 237, 218, 0.15));
+            border-radius: 12px;
+            padding: 15px;
+            margin: 25px 0;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .dress-code-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            color: #cbd5e1;
+        }
+
+        .dress-code-value {
+            font-weight: 600;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #fbcfe8, #bbf7d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.1rem;
+        }
+
+        .fun-section {
+            margin: 25px 0;
+        }
+
+        .energy-tag {
+            font-style: italic;
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .checklist {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+        }
+
+        .quote {
+            font-size: 0.85rem;
+            font-style: italic;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2.8rem; }
+            .names { font-size: 1.5rem; }
+            .date-time { flex-direction: column; gap: 10px; }
+            .divider { width: 40px; height: 1px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="stars">✨ ✨ ✨</div>
+        <div class="sub-header">Join us under the stars for our</div>
+        <h1>Sangeet Night</h1>
+
+        <div class="names">Midhila <span>&</span> Allen</div>
+
+        <p class="invitation-text">
+            joyfully invite you to celebrate an evening of<br>
+            <strong>music, dance & togetherness</strong>.
+        </p>
+
+        <div class="event-details">
+            <div class="date-time">
+                <div class="date-box">
+                    <div class="day">SATURDAY</div>
+                    <div class="number">15</div>
+                    <div class="month-year">AUGUST, 2026</div>
+                </div>
+                <div class="divider"></div>
+                <div class="time">
+                    6:30 PM
+                </div>
+            </div>
+
+            <div class="location">
+                at<br>
+                <div class="venue-name">SYDNEY HALL, PARK REGIS KRIS KIN HOTEL</div>
+                OPP. BURJUMAN, DUBAI
+            </div>
+        </div>
+
+        <div class="dress-code-box">
+            <div class="dress-code-title">Dress Code</div>
+            <div class="dress-code-value">PASTEL GREEN & PINK</div>
+        </div>
+
+        <div class="fun-section">
+            <div class="energy-tag">"Yes, time to show up with full energy!"</div>
+            <ul class="checklist">
+                <li>💃 Cheer for Team Bride & Team Groom</li>
+                <li>🍕 Eat like it's your cheat day</li>
+                <li>😄 Laugh until your cheeks hurt</li>
+                <li>📸 Make memories we'll never forget</li>
+            </ul>
+        </div>
+
+        <p class="invitation-text" style="margin-top: 20px; margin-bottom: 0;">
+            Your presence will make our celebration truly special.<br>
+            We look forward to celebrating with you.
+        </p>
+
+        <div class="quote">
+            "The pages may turn, the day may end, but what we built together will stay written in memory."
+        </div>
+    </div>
+
+</body>
+</html>

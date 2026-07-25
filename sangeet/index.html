@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll Frame Animation</title>
+  <link rel="stylesheet" href="scroll-animation.css">
+</head>
+<body>
+  <canvas id="frame-canvas" aria-label="Scroll animation"></canvas>
+
+  <div id="invite-overlay">
+    <!-- Each .invite-section is spread evenly across the scroll and fades+rises in/out. -->
+    <section class="invite-section">
+      <p class="eyebrow">With the blessings of their families</p>
+      <p class="ornament">&#10086;</p>
+      <p class="lede">You are joyfully invited to the</p>
+    </section>
+
+    <section class="invite-section">
+      <p class="eyebrow">The Sangeet of</p>
+      <h1 class="names">BRIDE NAME<span class="amp">&amp;</span>GROOM NAME</h1>
+    </section>
+
+    <section class="invite-section">
+      <p class="eyebrow">An evening of</p>
+      <h2 class="headline">Music, Dance &amp; Celebration</h2>
+      <p class="lede">Bring your best moves.</p>
+    </section>
+
+    <section class="invite-section">
+      <p class="eyebrow">Save the date</p>
+      <h2 class="headline">DAY, MONTH DATE, YEAR</h2>
+      <p class="lede">Doors open at TIME PM</p>
+    </section>
+
+    <section class="invite-section">
+      <p class="eyebrow">Join us at</p>
+      <h2 class="headline">VENUE NAME</h2>
+      <p class="lede">STREET ADDRESS<br>CITY, STATE</p>
+    </section>
+
+    <section class="invite-section">
+      <p class="ornament">&#10086;</p>
+      <h2 class="headline">See you on the dance floor</h2>
+      <p class="lede">RSVP to PHONE / EMAIL by RSVP DATE</p>
+    </section>
+  </div>
+
+  <div id="scroll-track" aria-hidden="true"></div>
+  <script src="scroll-animation.js"></script>
+</body>
+</html>

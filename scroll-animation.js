@@ -3,15 +3,22 @@
   const FRAME_FOLDER = "frames";
   const FRAME_PREFIX = "frame_";
   const FRAME_EXT = ".jpg";
+  const INTRO_FADE_START_FRAME = 2;
+  const INTRO_FADE_END_FRAME = 12;
+  const INTRO_FADE_IN_DURATION_MS = 1200;
 
   const canvas = document.getElementById("frame-canvas");
   const ctx = canvas.getContext("2d", { alpha: false });
   const scrollTrack = document.getElementById("scroll-track");
+  const introSection = document.getElementById("intro-section");
+  const introTaglineSection = document.getElementById("intro-tagline-section");
+  const detailsSection = document.getElementById("details-section");
 
   const images = new Array(TOTAL_FRAMES);
   let loadedCount = 0;
   let frameToRender = 0;
   let rafId = 0;
+  let introFadeInStartedAt = 0;
 
   function framePath(index) {
     const fileNumber = String(index + 1).padStart(6, "0");
@@ -72,6 +79,20 @@
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
     ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
+
+    // Apply a subtle cinematic shade directly on the canvas for text readability.
+    const verticalShade = ctx.createLinearGradient(0, 0, 0, ch);
+    verticalShade.addColorStop(0, "rgba(8, 10, 30, 0.26)");
+    verticalShade.addColorStop(0.52, "rgba(8, 10, 30, 0.16)");
+    verticalShade.addColorStop(1, "rgba(8, 10, 30, 0.34)");
+    ctx.fillStyle = verticalShade;
+    ctx.fillRect(0, 0, cw, ch);
+
+    const centerGlow = ctx.createRadialGradient(cw * 0.5, ch * 0.12, 0, cw * 0.5, ch * 0.12, ch * 0.95);
+    centerGlow.addColorStop(0, "rgba(42, 55, 122, 0.12)");
+    centerGlow.addColorStop(1, "rgba(8, 10, 30, 0)");
+    ctx.fillStyle = centerGlow;
+    ctx.fillRect(0, 0, cw, ch);
   }
 
   function scrollProgress() {
@@ -89,10 +110,49 @@
     if (rafId) return;
     rafId = window.requestAnimationFrame(() => {
       rafId = 0;
+      if (!introFadeInStartedAt) {
+        introFadeInStartedAt = performance.now();
+      }
+
       const nextFrame = targetFrameFromScroll();
       if (nextFrame !== frameToRender) {
         frameToRender = nextFrame;
       }
+
+      const showDetails = frameToRender >= 50;
+      const fadeOutFrameProgress = Math.max(0, frameToRender - INTRO_FADE_START_FRAME);
+      const fadeOutOpacity = Math.max(0, Math.min(1, 1 - fadeOutFrameProgress / INTRO_FADE_END_FRAME));
+      const fadeInProgress = Math.max(0, Math.min(1, (performance.now() - introFadeInStartedAt) / INTRO_FADE_IN_DURATION_MS));
+      const introOpacity = Math.min(fadeInProgress, fadeOutOpacity);
+
+      if (introSection) {
+        introSection.classList.toggle("is-inactive", showDetails);
+        if (showDetails) {
+          introSection.style.opacity = "0";
+          introSection.style.transform = "";
+        } else {
+          introSection.style.opacity = String(introOpacity);
+          introSection.style.transform = `translateY(${(1 - introOpacity) * 14}px)`;
+        }
+      }
+      if (introTaglineSection) {
+        introTaglineSection.classList.toggle("is-inactive", showDetails);
+        if (showDetails) {
+          introTaglineSection.style.opacity = "0";
+          introTaglineSection.style.transform = "";
+        } else {
+          introTaglineSection.style.opacity = String(introOpacity);
+          introTaglineSection.style.transform = `translateY(${(1 - introOpacity) * 10}px)`;
+        }
+      }
+      if (detailsSection) {
+        detailsSection.classList.toggle("is-active", showDetails);
+      }
+
+      if (!showDetails && fadeInProgress < 1) {
+        requestDraw();
+      }
+
       drawFrame(frameToRender);
     });
   }
