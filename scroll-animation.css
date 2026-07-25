@@ -71,6 +71,15 @@ body {
   animation: twinkle 4s ease-in-out infinite;
 }
 
+#invite-flow {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 @keyframes twinkle {
   0%,
   100% {

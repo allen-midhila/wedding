@@ -24,6 +24,17 @@
     scrollTrack.style.height = `${viewportHeight * scrollMultiplier}px`;
   }
 
+  function syncInviteFlowHeight() {
+    const inviteFlow = document.getElementById("invite-flow");
+    if (!inviteFlow) {
+      return;
+    }
+
+    const viewportHeight = window.innerHeight;
+    const trackHeight = parseFloat(scrollTrack.style.height) || viewportHeight;
+    inviteFlow.style.minHeight = `${Math.max(viewportHeight, trackHeight)}px`;
+  }
+
   function resizeCanvas() {
     const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
     const width = Math.floor(window.innerWidth * dpr);
@@ -108,6 +119,7 @@
 
   window.addEventListener("resize", () => {
     updateScrollTrackHeight();
+    syncInviteFlowHeight();
     resizeCanvas();
     requestDraw();
   });
@@ -115,6 +127,7 @@
   window.addEventListener("scroll", requestDraw, { passive: true });
   window.addEventListener("load", () => {
     updateScrollTrackHeight();
+    syncInviteFlowHeight();
     resizeCanvas();
     preloadFrames();
     requestDraw();
