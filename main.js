@@ -164,6 +164,60 @@ songForm.addEventListener('submit', e=>{
   songForm.reset();
 });
 
+const RSVP_GOOGLE_FORM_ACTION_URL = '';
+const RSVP_GOOGLE_FORM_FIELDS = {
+  name: '',
+  email: '',
+  attending: '',
+  notes: '',
+  submittedAt: ''
+};
+
+function sendRsvpToGoogleForm(payload){
+  if(!RSVP_GOOGLE_FORM_ACTION_URL) return Promise.resolve(false);
+
+  const form = document.createElement('form');
+  form.action = RSVP_GOOGLE_FORM_ACTION_URL;
+  form.method = 'POST';
+  form.target = 'rsvp-form-target';
+  form.style.display = 'none';
+
+  const ensureTarget = ()=>{
+    let targetFrame = document.getElementById('rsvp-form-target');
+    if(!targetFrame){
+      targetFrame = document.createElement('iframe');
+      targetFrame.name = 'rsvp-form-target';
+      targetFrame.id = 'rsvp-form-target';
+      targetFrame.style.display = 'none';
+      document.body.appendChild(targetFrame);
+    }
+    return targetFrame;
+  };
+
+  ensureTarget();
+
+  Object.entries({
+    [RSVP_GOOGLE_FORM_FIELDS.name]: payload.name,
+    [RSVP_GOOGLE_FORM_FIELDS.email]: payload.email,
+    [RSVP_GOOGLE_FORM_FIELDS.attending]: payload.attending,
+    [RSVP_GOOGLE_FORM_FIELDS.notes]: payload.notes,
+    [RSVP_GOOGLE_FORM_FIELDS.submittedAt]: payload.submittedAt
+  }).forEach(([fieldName, value])=>{
+    if(!fieldName) return;
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = fieldName;
+    input.value = value ?? '';
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+  form.remove();
+
+  return Promise.resolve(true);
+}
+
 /* ---------- Countdown ---------- */
 const target = new Date('2026-08-24T11:30:00+05:30').getTime();
 function tick(){
@@ -191,17 +245,30 @@ document.querySelectorAll('.attend-btn').forEach(btn=>{
 document.getElementById('rsvpForm').addEventListener('submit', e=>{
   e.preventDefault();
   const name = document.getElementById('rsvpName').value.trim();
+  const email = document.getElementById('rsvpEmail').value.trim();
+  const notes = document.getElementById('rsvpNotes').value.trim();
   if(!name) return;
+  if(!email) return;
   if(!attending){ alert('Please let us know if you can attend 💌'); return; }
-  document.getElementById('rsvpForm').style.display = 'none';
-  document.querySelector('#rsvp .deadline').style.display = 'none';
-  document.querySelector('#rsvp .cal-links').style.display = 'none';
   const success = document.getElementById('rsvpSuccess');
-  document.getElementById('rsvpSuccessMsg').textContent =
-    attending==='yes'
-      ? 'We can\'t wait to celebrate with you, '+name+'!'
-      : 'You will be dearly missed, '+name+'. Thank you for letting us know.';
-  success.classList.add('show');
+
+  sendRsvpToGoogleForm({
+    name,
+    email,
+    attending,
+    notes,
+    source: 'invite.html',
+    submittedAt: new Date().toISOString()
+  }).catch(()=>{}).finally(()=>{
+    document.getElementById('rsvpForm').style.display = 'none';
+    document.querySelector('#rsvp .deadline').style.display = 'none';
+    document.querySelector('#rsvp .cal-links').style.display = 'none';
+    document.getElementById('rsvpSuccessMsg').textContent =
+      attending==='yes'
+        ? 'We can\'t wait to celebrate with you, '+name+'!'
+        : 'You will be dearly missed, '+name+'. Thank you for letting us know.';
+    success.classList.add('show');
+  });
 });
 
 /* ---------- Add to Calendar (.ics) ---------- */

@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midhila &amp; Allen — Sangeet Night</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ═══ SANGEET NIGHT — NAVY BLUE OVERRIDE ═══ */
+:root {
+  --paper:   #0b1540;
+  --paper-2: #0e1a50;
+  --rose:    #e8b7c0;
+  --rose-deep: #c4a265;
+  --rose-soft: rgba(196,162,101,.18);
+  --ink:     #f5eed8;
+  --ink-soft: #c8bfa6;
+  --gold:    #c4a265;
+  --gold-deep:#a8843f;
+  --white:   #fdf8ee;
+}
+
+/* page background deep navy */
+body { background: var(--paper); color: var(--ink); }
+
+/* INTRO — starry night sky */
+#intro {
+  background: radial-gradient(ellipse at 50% 30%, #1a2b7a 0%, #0b1540 55%, #060d2e 100%);
+}
+/* override warm hall gradient */
+.hall::before {
+  background: radial-gradient(ellipse at 50% 0%, rgba(196,162,101,.22) 0%, transparent 55%);
+}
+.hall::after {
+  background: linear-gradient(180deg, #0d1a50 0%, #080f35 30%, #040a22 100%);
+  border-top: 1px solid rgba(196,162,101,.35);
+}
+/* door panels */
+.door { background: #0e1b55; border-color: rgba(196,162,101,.6); }
+.door-glow { background: radial-gradient(ellipse at 50% 50%, rgba(196,162,101,.3) 0%, transparent 70%); }
+.curtain path:first-child { fill: #1a2b6e; }
+.curtain path:last-child  { fill: #142060; }
+.panel-line { background: linear-gradient(180deg,transparent,rgba(196,162,101,.4),transparent); }
+.white-veil { background: #0b1540; }
+
+/* stars in intro */
+#intro::after {
+  content:'';
+  position:absolute; inset:0; z-index:2; pointer-events:none;
+  background-image:
+    radial-gradient(circle, #fff 1px, transparent 1px),
+    radial-gradient(circle, #fff 1px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,.6) 1px, transparent 1px);
+  background-size: 120px 120px, 80px 80px, 60px 60px;
+  background-position: 10px 10px, 40px 50px, 25px 75px;
+  opacity: .45;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+@keyframes twinkle { from {opacity:.35} to {opacity:.6} }
+
+/* string lights in intro */
+.chandelier { opacity: .95; filter: drop-shadow(0 0 6px rgba(255,240,160,.7)); }
+
+/* main sections */
+#hero, section {
+  background: var(--paper);
+}
+
+/* hero accent */
+#hero .eyebrow { color: var(--gold); }
+#hero h1 { color: var(--white); text-shadow: 0 0 40px rgba(196,162,101,.4); }
+#hero .divider { background: var(--gold); }
+
+/* scroll cue */
+.scroll-cue .eyebrow { color: var(--gold); }
+
+/* section titles */
+.section-title { color: var(--white); }
+.sub-eyebrow { color: var(--gold); }
+.divider { background: var(--gold); }
+.eyebrow { color: var(--gold); }
+
+/* event-badge: big date display */
+.sangeeth-badge {
+  display:flex; flex-direction:column; align-items:center; gap:.4rem;
+  padding:2.2rem 2rem; margin:1.6rem auto 0;
+  max-width:360px;
+  border:1px solid rgba(196,162,101,.4);
+  border-radius:4px;
+  background: rgba(196,162,101,.06);
+  backdrop-filter: blur(4px);
+}
+.sangeeth-badge .big-date {
+  font-size:4.2rem; font-weight:600; line-height:1;
+  font-family:'Cormorant Garamond',serif;
+  color: var(--white);
+  text-shadow: 0 0 30px rgba(196,162,101,.5);
+}
+.sangeeth-badge .big-date sup {
+  font-size:1.4rem; vertical-align:super;
+}
+.sangeeth-badge .day-month {
+  font-size:.68rem; letter-spacing:.38em; text-transform:uppercase;
+  color: var(--gold); font-weight:500;
+}
+.sangeeth-badge .time-loc {
+  font-size:.75rem; letter-spacing:.25em; text-transform:uppercase;
+  color: var(--ink-soft); margin-top:.6rem;
+}
+.sangeeth-badge .venue-name {
+  font-family:'Great Vibes',cursive; font-size:1.6rem;
+  color: var(--white); line-height:1.3; text-align:center;
+  margin-top:.4rem;
+}
+.sangeeth-badge .venue-sub {
+  font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;
+  color: var(--ink-soft); text-align:center;
+}
+
+/* venue card dark */
+.venue-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(196,162,101,.25);
+}
+.venue-card h4 { color: var(--white); }
+.venue-card p  { color: var(--ink-soft); }
+
+/* dress code section */
+#dresscode {
+  text-align:center;
+  padding-bottom:3.5rem;
+}
+.dresscode-headline {
+  font-family:'Great Vibes',cursive;
+  font-size:clamp(1.8rem,6vw,2.8rem);
+  color: var(--white);
+  line-height:1.3;
+  margin:1.2rem auto 0;
+  max-width:480px;
+}
+.dresscode-tags {
+  display:flex; gap:.9rem; justify-content:center; flex-wrap:wrap;
+  margin:1.4rem auto 0;
+}
+.dresscode-tag {
+  padding:.5rem 1.4rem;
+  border:1px solid currentColor;
+  border-radius:2px;
+  font-size:.72rem; letter-spacing:.3em; text-transform:uppercase; font-weight:600;
+}
+.tag-green { color:#7ec89a; border-color:#7ec89a; }
+.tag-pink  { color:#e8b7c0; border-color:#e8b7c0; }
+.dresscode-bullets {
+  list-style:none; padding:0; margin:1.6rem auto 0;
+  max-width:380px; display:flex; flex-direction:column; gap:.75rem;
+}
+.dresscode-bullets li {
+  font-size:.92rem; color: var(--ink-soft);
+  padding:.5rem 0;
+  border-bottom:1px solid rgba(196,162,101,.15);
+}
+.dresscode-bullets li:last-child { border-bottom:none; }
+.closing-verse {
+  max-width:420px; margin:2rem auto 0;
+  font-style:italic; font-size:.96rem; line-height:1.7;
+  color: var(--ink-soft);
+}
+
+/* polaroid on dark */
+.polaroid { background:#f5eed8; }
+.polaroid figcaption { color: #5e4249; }
+
+/* timeline dark */
+.t-item { border-left-color: rgba(196,162,101,.35); }
+.t-time  { color: var(--gold); }
+.t-item h5 { color: var(--white); }
+.t-item p  { color: var(--ink-soft); }
+
+/* hotel cards dark */
+.hotels { gap:1.2rem; }
+.hotel {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(196,162,101,.22);
+}
+.hotel h5 { color: var(--gold); }
+.hotel p, .hotel strong { color: var(--ink-soft); }
+
+/* contact strip dark */
+.contact-strip { background: rgba(255,255,255,.04); border-color: rgba(196,162,101,.25); }
+.contact-strip-title { color: var(--gold); }
+.contact-link { color: var(--ink-soft); }
+.contact-link:hover { color: var(--white); }
+
+/* playlist dark */
+.playlist-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(196,162,101,.22);
+}
+.playlist-card input, .playlist-card textarea {
+  background: rgba(255,255,255,.07);
+  border-color: rgba(196,162,101,.3);
+  color: var(--ink);
+}
+.playlist-card input::placeholder { color: var(--ink-soft); }
+.song-item { border-bottom-color: rgba(196,162,101,.15); }
+.s-title { color: var(--white); }
+.s-meta  { color: var(--ink-soft); }
+.note-icon { color: var(--gold); }
+.empty-note { color: var(--ink-soft); }
+
+/* countdown dark */
+#count { background: var(--paper-2); }
+.cd-cell { background: rgba(255,255,255,.05); border-color: rgba(196,162,101,.25); }
+.cd-num  { color: var(--gold); }
+.cd-label{ color: var(--ink-soft); }
+
+/* rsvp dark */
+.rsvp-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(196,162,101,.22);
+}
+.rsvp-card input, .rsvp-card textarea {
+  background: rgba(255,255,255,.07);
+  border-color: rgba(196,162,101,.3);
+  color: var(--ink);
+}
+.rsvp-card input::placeholder,
+.rsvp-card textarea::placeholder { color: var(--ink-soft); }
+.deadline { color: var(--ink-soft); }
+.attend-btn {
+  background: rgba(196,162,101,.1);
+  border-color: rgba(196,162,101,.4);
+  color: var(--ink-soft);
+}
+.attend-btn.selected, .attend-btn:hover {
+  background: rgba(196,162,101,.25);
+  color: var(--white);
+  border-color: var(--gold);
+}
+.cal-links a { color: var(--gold); border-color: rgba(196,162,101,.3); }
+.cal-links a:hover { background: rgba(196,162,101,.12); }
+
+/* btn override */
+.btn {
+  background: var(--gold);
+  color: #0b1540;
+  border-color: var(--gold);
+}
+.btn:hover { background: var(--gold-deep); border-color: var(--gold-deep); }
+
+/* footer dark */
+footer { background: #060d2e; border-top: 1px solid rgba(196,162,101,.2); }
+footer .script { color: var(--white); }
+footer .eyebrow { color: var(--gold); }
+
+/* falling petals → gold stars on navy */
+.petal {
+  background: none !important;
+  position: fixed;
+  top: -20px;
+  border-radius: 50%;
+  opacity: .7;
+  animation: petal-fall linear forwards;
+  pointer-events: none;
+  z-index: 999;
+}
+.petal::after {
+  content: '✦';
+  font-size: 14px;
+  color: #c4a265;
+  display: block;
+}
+
+/* string lights in hero */
+#hero::before {
+  content:'';
+  display:block;
+  width:100%; height:60px;
+  background:
+    radial-gradient(circle 3px at 10% 50%, #ffe97a 0%, transparent 60%),
+    radial-gradient(circle 3px at 22% 40%, #ffe97a 0%, transparent 60%),
+    radial-gradient(circle 3px at 34% 55%, #ffe97a 0%, transparent 60%),
+    radial-gradient(circle 3px at 46% 42%, #ffe97a 0%, transparent 60%),
+    radial-gradient(circle 3px at 58% 58%, #ffe97a 0%, transparent 60%),
+    radial-gradient(circle 3px at 70% 45%, #ffe97a 0%, transparent 60%),
+    radial-gradient(circle 3px at 82% 52%, #ffe97a 0%, transparent 60%),
+    radial-gradient(circle 3px at 92% 38%, #ffe97a 0%, transparent 60%);
+  opacity: .8;
+  margin-bottom: -1rem;
+}
+
+/* map link  */
+.map-link {
+  display:inline-block; margin-top:1rem;
+  font-size:.68rem; letter-spacing:.22em; text-transform:uppercase;
+  color: var(--gold); text-decoration:none;
+  border:1px solid rgba(196,162,101,.45); padding:.45rem 1.2rem; border-radius:2px;
+}
+.map-link:hover { background: rgba(196,162,101,.12); }
+</style>
+</head>
+<body class="locked">
+
+<!-- ==================== DOOR INTRO ==================== -->
+<div id="intro" aria-label="Entrance — tap to open the doors">
+  <div class="hall">
+    <!-- ═══ ARTWORK MODE (preferred) ═══════════════════════════════════
+         Drop two images next to this HTML file:
+           entrance-closed.jpg — the hall with the doors CLOSED
+           entrance-open.jpg   — the SAME scene, doors OPEN, light inside
+         Portrait, ~1200×1800 or larger. When present they replace the
+         coded fallback scene below. See the AI prompts in the chat.   -->
+    <img class="stage-img img-open" src="entrance-open.jpg" alt="" onerror="this.classList.add('missing')">
+    <img class="stage-img img-closed" src="entrance-closed.jpg" alt="" onerror="this.classList.add('missing')">
+    <!-- fallback hall (hidden automatically when artwork images are present) -->
+    <div class="panel-line l1"></div><div class="panel-line l2"></div>
+    <div class="panel-line r1"></div><div class="panel-line r2"></div>
+    <svg class="chandelier" viewBox="0 0 120 100" fill="none">
+      <line x1="60" y1="0" x2="60" y2="18" stroke="#C4A265" stroke-width="2"/>
+      <path d="M20 40 Q60 10 100 40" stroke="#C4A265" stroke-width="2" fill="none"/>
+      <path d="M30 40 Q60 66 90 40" stroke="#C4A265" stroke-width="1.5" fill="none"/>
+      <circle cx="20" cy="42" r="4" fill="#EBD3A0"/><circle cx="100" cy="42" r="4" fill="#EBD3A0"/>
+      <circle cx="60" cy="22" r="4" fill="#EBD3A0"/>
+      <circle cx="40" cy="52" r="3" fill="#EBD3A0"/><circle cx="80" cy="52" r="3" fill="#EBD3A0"/>
+      <circle cx="60" cy="58" r="3.5" fill="#EBD3A0"/>
+      <line x1="20" y1="46" x2="20" y2="58" stroke="#E9CF98" stroke-width="1"/>
+      <line x1="100" y1="46" x2="100" y2="58" stroke="#E9CF98" stroke-width="1"/>
+      <line x1="60" y1="61" x2="60" y2="76" stroke="#E9CF98" stroke-width="1"/>
+    </svg>
+    <div class="arch-wrap">
+      <div class="arch-opening">
+        <div class="door-glow"></div>
+        <div class="door left"></div>
+        <div class="door right"></div>
+        <!-- curtain valance -->
+        <svg class="curtain" viewBox="0 0 400 90" preserveAspectRatio="none">
+          <path d="M0 0 H400 V28 Q360 62 320 30 Q285 68 250 32 Q215 72 200 34 Q185 72 150 32 Q115 68 80 30 Q40 62 0 28 Z" fill="#F4E4DC" stroke="#C4A265" stroke-width="1"/>
+          <path d="M0 0 H400 V16 Q300 34 200 20 Q100 34 0 16 Z" fill="#EAD3C8"/>
+        </svg>
+      </div>
+      <!-- climbing roses -->
+      <svg class="roses" viewBox="0 0 200 300" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <g id="rose">
+            <circle r="7" fill="#E8B7C0"/>
+            <circle r="4.6" fill="#DFA3AF"/>
+            <circle r="2.6" fill="#C98C9A"/>
+            <circle r="1.1" fill="#B9838F"/>
+          </g>
+          <g id="rose2">
+            <circle r="6" fill="#F2D4CB"/>
+            <circle r="3.8" fill="#E9BFB4"/>
+            <circle r="2" fill="#D9A398"/>
+          </g>
+          <g id="rose3">
+            <circle r="5" fill="#F7E3E7"/>
+            <circle r="3" fill="#EFC9D1"/>
+            <circle r="1.4" fill="#DFA3AF"/>
+          </g>
+          <g id="leaf"><ellipse rx="4" ry="2" fill="#C9CBB4"/></g>
+        </defs>
+        <!-- left column of roses -->
+        <g>
+          <use href="#rose" x="18" y="270"/><use href="#rose2" x="10" y="255"/><use href="#rose3" x="26" y="252"/>
+          <use href="#rose" x="14" y="236"/><use href="#rose2" x="26" y="222"/><use href="#rose3" x="10" y="212"/>
+          <use href="#rose" x="20" y="198"/><use href="#rose2" x="9" y="184"/><use href="#rose3" x="24" y="176"/>
+          <use href="#rose" x="13" y="160"/><use href="#rose2" x="24" y="148"/><use href="#rose3" x="10" y="136"/>
+          <use href="#rose" x="18" y="122"/><use href="#rose2" x="9" y="108"/><use href="#rose3" x="24" y="100"/>
+          <use href="#rose" x="14" y="86"/><use href="#rose2" x="26" y="74"/>
+          <use href="#leaf" x="30" y="240"/><use href="#leaf" x="4" y="196"/><use href="#leaf" x="30" y="150"/><use href="#leaf" x="5" y="118"/>
+        </g>
+        <!-- right column -->
+        <g>
+          <use href="#rose" x="182" y="270"/><use href="#rose2" x="190" y="255"/><use href="#rose3" x="174" y="252"/>
+          <use href="#rose" x="186" y="236"/><use href="#rose2" x="174" y="222"/><use href="#rose3" x="190" y="212"/>
+          <use href="#rose" x="180" y="198"/><use href="#rose2" x="191" y="184"/><use href="#rose3" x="176" y="176"/>
+          <use href="#rose" x="187" y="160"/><use href="#rose2" x="176" y="148"/><use href="#rose3" x="190" y="136"/>
+          <use href="#rose" x="182" y="122"/><use href="#rose2" x="191" y="108"/><use href="#rose3" x="176" y="100"/>
+          <use href="#rose" x="186" y="86"/><use href="#rose2" x="174" y="74"/>
+          <use href="#leaf" x="170" y="240"/><use href="#leaf" x="196" y="196"/><use href="#leaf" x="170" y="150"/><use href="#leaf" x="195" y="118"/>
+        </g>
+        <!-- arch top -->
+        <g>
+          <use href="#rose" x="34" y="62"/><use href="#rose2" x="46" y="50"/><use href="#rose3" x="58" y="42"/>
+          <use href="#rose" x="72" y="36"/><use href="#rose2" x="86" y="32"/><use href="#rose3" x="100" y="30"/>
+          <use href="#rose" x="114" y="32"/><use href="#rose2" x="128" y="36"/><use href="#rose3" x="142" y="42"/>
+          <use href="#rose" x="154" y="50"/><use href="#rose2" x="166" y="62"/>
+          <use href="#rose3" x="40" y="74"/><use href="#rose3" x="160" y="74"/>
+          <use href="#leaf" x="64" y="48"/><use href="#leaf" x="136" y="48"/><use href="#leaf" x="100" y="24"/>
+        </g>
+        <!-- ground bushes -->
+        <g>
+          <use href="#rose" x="30" y="288"/><use href="#rose2" x="44" y="292"/><use href="#rose" x="12" y="290"/>
+          <use href="#rose" x="170" y="288"/><use href="#rose2" x="156" y="292"/><use href="#rose" x="188" y="290"/>
+        </g>
+      </svg>
+    </div>
+    <div class="white-veil" aria-hidden="true"></div>
+    <div class="enter-hint" id="enterHint">
+      <div class="open-text">Click to Open</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PETALS ==================== -->
+<div id="petals" aria-hidden="true"></div>
+
+<!-- ==================== MAIN ==================== -->
+<main id="main">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="eyebrow reveal">Join us under the stars for our</div>
+    <h1 class="script reveal" style="font-size:clamp(3rem,12vw,5.5rem);">Sangeet Night</h1>
+    <div class="eyebrow reveal" style="font-size:.85rem;margin-top:.4rem;letter-spacing:.3em;">MIDHILA &amp; ALLEN</div>
+    <div class="divider reveal"></div>
+    <p class="reveal" style="font-style:italic;font-size:1rem;color:var(--ink-soft);max-width:340px;margin:.8rem auto 0;line-height:1.7;">joyfully invite you to celebrate an evening of<br>music, dance &amp; togetherness</p>
+    <div class="scroll-cue" style="margin-top:1.8rem;">
+      <div class="eyebrow">Scroll to discover</div>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4l5 6 5-6" stroke="#c4a265" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </section>
+
+  <!-- SANGEET DATE & VENUE -->
+  <section id="save" style="text-align:center;">
+    <h2 class="script reveal" style="font-size:clamp(2rem,8vw,3rem);">The Night Awaits</h2>
+    <div class="divider reveal"></div>
+    <div class="sangeeth-badge reveal">
+      <div class="day-month">Saturday · August 2026</div>
+      <div class="big-date">15<sup>th</sup></div>
+      <div class="time-loc">6:30 PM</div>
+      <div class="venue-name">Sydney Hall</div>
+      <div class="venue-sub">Park Regis Kris Kin Hotel</div>
+      <div class="venue-sub" style="margin-top:.2rem;">Opp. Burjuman, Dubai</div>
+      <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Park+Regis+Kris+Kin+Hotel+Dubai" target="_blank" rel="noopener">📍 Open in Maps</a>
+    </div>
+    <p class="reveal" style="font-style:italic;font-size:.9rem;color:var(--ink-soft);margin-top:1.6rem;">Your presence will make our celebration truly special.<br>We look forward to celebrating with you.</p>
+  </section>
+
+  <!-- DRESS CODE -->
+  <section id="dresscode">
+    <h3 class="section-title script reveal" style="font-size:clamp(1.8rem,7vw,2.8rem);">Yes, time to show up</h3>
+    <div class="dresscode-headline reveal">with full energy!</div>
+    <div class="dresscode-tags reveal">
+      <span class="dresscode-tag tag-green">Pastel Green</span>
+      <span class="dresscode-tag tag-pink">Pink</span>
+    </div>
+    <div class="eyebrow reveal" style="margin-top:1.2rem;">Dress Code</div>
+    <ul class="dresscode-bullets reveal">
+      <li>Cheer for Team Bride &amp; Team Groom</li>
+      <li>Eat like it's your cheat day</li>
+      <li>Laugh until your cheeks hurt</li>
+      <li>Make memories we'll never forget</li>
+    </ul>
+    <p class="closing-verse reveal">
+      The pages may turn, the day may end,<br>
+      but what we built together will stay written in memory.<br><br>
+      <em>We can't wait to celebrate with you.</em>
+    </p>
+  </section>
+
+  <!-- VENUE -->
+  <section id="venue">
+    <h3 class="section-title script reveal">The Venue</h3>
+    <div class="eyebrow sub-eyebrow reveal">Where to go</div>
+    <div class="venue-card reveal">
+      <div class="venue-photo">
+        <svg viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet" aria-label="Illustration of the venue garden">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#F9E9E2"/><stop offset="1" stop-color="#F2D7CF"/>
+            </linearGradient>
+            <linearGradient id="bld" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#EFDFD3"/><stop offset="1" stop-color="#E3CBBB"/>
+            </linearGradient>
+          </defs>
+          <rect width="600" height="300" fill="url(#sky)"/>
+          <!-- opera facade -->
+          <rect x="150" y="70" width="300" height="160" fill="url(#bld)"/>
+          <rect x="150" y="60" width="300" height="14" fill="#D9BFA9"/>
+          <g fill="#CBAE94">
+            <rect x="170" y="90" width="18" height="120"/><rect x="210" y="90" width="18" height="120"/>
+            <rect x="250" y="90" width="18" height="120"/><rect x="290" y="90" width="18" height="120"/>
+            <rect x="330" y="90" width="18" height="120"/><rect x="370" y="90" width="18" height="120"/>
+            <rect x="410" y="90" width="18" height="120"/>
+          </g>
+          <g fill="#F6EBE0">
+            <path d="M170 90 a9 9 0 0 1 18 0 z"/><path d="M210 90 a9 9 0 0 1 18 0 z"/>
+            <path d="M250 90 a9 9 0 0 1 18 0 z"/><path d="M290 90 a9 9 0 0 1 18 0 z"/>
+            <path d="M330 90 a9 9 0 0 1 18 0 z"/><path d="M370 90 a9 9 0 0 1 18 0 z"/>
+            <path d="M410 90 a9 9 0 0 1 18 0 z"/>
+          </g>
+          <ellipse cx="300" cy="52" rx="70" ry="22" fill="#B7C2A8"/>
+          <!-- spire & cross -->
+          <path d="M290 40 L300 12 L310 40 Z" fill="#D9BFA9"/>
+          <rect x="298" y="0" width="4" height="16" fill="#C4A265"/>
+          <rect x="292" y="4" width="16" height="4" fill="#C4A265"/>
+          <!-- greenery -->
+          <ellipse cx="60" cy="250" rx="120" ry="70" fill="#AEB89B"/>
+          <ellipse cx="540" cy="255" rx="130" ry="75" fill="#A2AE90"/>
+          <ellipse cx="120" cy="270" rx="90" ry="50" fill="#C0C8AC"/>
+          <ellipse cx="480" cy="275" rx="95" ry="52" fill="#B4BEA0"/>
+          <!-- roses in bushes -->
+          <g fill="#DFA3AF">
+            <circle cx="40" cy="235" r="6"/><circle cx="75" cy="250" r="5"/><circle cx="110" cy="262" r="6"/>
+            <circle cx="520" cy="240" r="6"/><circle cx="488" cy="258" r="5"/><circle cx="555" cy="262" r="6"/>
+          </g>
+          <g fill="#EFC9D1">
+            <circle cx="58" cy="258" r="4"/><circle cx="95" cy="242" r="4"/>
+            <circle cx="505" cy="250" r="4"/><circle cx="540" cy="270" r="4"/>
+          </g>
+          <!-- path -->
+          <path d="M240 300 L285 210 H315 L360 300 Z" fill="#EBDBCB"/>
+          <!-- couple silhouettes -->
+          <g fill="#8A6B72">
+            <circle cx="292" cy="216" r="6"/>
+            <path d="M285 224 q7 -6 14 0 l3 34 q-10 6 -20 0 z" fill="#FDFBF9"/>
+            <circle cx="313" cy="214" r="6"/>
+            <path d="M306 222 q7 -5 14 0 l2 38 h-18 z" fill="#5E4249"/>
+          </g>
+        </svg>
+        <div class="time-chip">🎶 6:30 PM · SANGEET NIGHT</div>
+      </div>
+      <div class="venue-body">
+        <h4>Sydney Hall</h4>
+        <p>Park Regis Kris Kin Hotel</p>
+        <p>Opp. Burjuman, Dubai</p>
+        <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Park+Regis+Kris+Kin+Hotel+Dubai" target="_blank" rel="noopener">📍 Open in Maps</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- POLAROID GALLERY -->
+  <section id="gallery">
+    <h3 class="section-title script reveal">Our Moments</h3>
+    <div class="eyebrow sub-eyebrow reveal">A Polaroid story</div>
+    <div class="polaroid-stage reveal" id="stage">
+<figure class="polaroid" data-index="0">
+        <div class="photo">
+          <img src="images/photo-1.jpeg" alt="Allen and Midhila — Just us" loading="lazy">
+        </div>
+        <figcaption>Just us</figcaption>
+      </figure>
+      <figure class="polaroid" data-index="1">
+        <div class="photo wide">
+          <img src="images/photo-2.jpeg" alt="Allen and Midhila — the proposal" loading="lazy">
+        </div>
+        <figcaption>Will you marry me?</figcaption>
+      </figure>
+      <figure class="polaroid" data-index="2">
+        <div class="photo wide">
+          <img src="images/photo-3.jpeg" alt="Allen and Midhila — she said yes" loading="lazy">
+        </div>
+        <figcaption>She said yes</figcaption>
+      </figure>
+<figure class="polaroid" data-index="3">
+        <div class="photo">
+          <img src="images/photo-4.jpeg" alt="Allen and Midhila — Hand in hand" loading="lazy">
+        </div>
+        <figcaption>Tradition, love, and a touch of sunshine</figcaption>
+      </figure>
+<figure class="polaroid" data-index="4">
+        <div class="photo">
+          <img src="images/photo-5.jpeg" alt="Allen and Midhila — City lights and smiles" loading="lazy">
+        </div>
+        <figcaption>Cozy moments &amp; warm hugs</figcaption>
+      </figure>
+<figure class="polaroid" data-index="5">
+        <div class="photo">
+          <img src="images/photo-6.jpeg" alt="Allen and Midhila — Season of joy" loading="lazy">
+        </div>
+        <figcaption>Ready for the next big adventure</figcaption>
+      </figure>
+<figure class="polaroid" data-index="6">
+        <div class="photo">
+          <img src="images/photo-7.jpeg" alt="Allen and Midhila — Golden evenings" loading="lazy">
+        </div>
+        <figcaption>My forever date</figcaption>
+      </figure>
+<figure class="polaroid" data-index="7">
+        <div class="photo">
+          <img src="images/photo-8.jpeg" alt="Allen and Midhila — Night strolls" loading="lazy">
+        </div>
+        <figcaption>Night strolls</figcaption>
+      </figure>
+<figure class="polaroid" data-index="8">
+        <div class="photo">
+          <img src="images/photo-9.jpeg" alt="Allen and Midhila — Moments of grace" loading="lazy">
+        </div>
+        <figcaption>Together, we grow</figcaption>
+      </figure>
+    </div>
+    <div class="gallery-nav reveal">
+      <button class="nav-arrow" id="prevBtn" aria-label="Previous photo">‹</button>
+      <div class="dots" id="dots"></div>
+      <button class="nav-arrow" id="nextBtn" aria-label="Next photo">›</button>
+    </div>
+    <div class="counter reveal" id="counter" style="margin-top:.9rem;">1 / 9</div>
+    <div class="eyebrow gallery-hint reveal" style="font-size:.58rem;">Swipe or tap to browse</div>
+  </section>
+
+  <!-- PROGRAM -->
+  <section id="program">
+    <h3 class="section-title script reveal">Evening Program</h3>
+    <div class="eyebrow sub-eyebrow reveal">The night</div>
+    <div class="timeline reveal">
+      <div class="t-item">
+        <div class="t-time">6:30 PM</div>
+        <h5>Doors Open</h5>
+        <p>Welcome to Sydney Hall — find your seats and soak in the atmosphere</p>
+      </div>
+      <div class="t-item">
+        <div class="t-time">7:00 PM</div>
+        <h5>Sangeet Begins</h5>
+        <p>Music, dance &amp; performances under the stars</p>
+      </div>
+      <div class="t-item">
+        <div class="t-time">Evening</div>
+        <h5>Dinner &amp; Celebrations</h5>
+        <p>Eat, laugh and dance the night away with Team Bride &amp; Team Groom</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAMILIES -->
+  <section id="stay">
+    <h3 class="section-title script reveal">Our Families</h3>
+    <div class="eyebrow sub-eyebrow reveal">With love &amp; blessings</div>
+    <p class="dress-note reveal" style="margin-top:1.6rem;">For any assistance or to share your wishes, please feel free to reach out to us.</p>
+    <div class="hotels reveal">
+      <div class="hotel">
+        <h5>Groom’s Family</h5>
+        <p><strong>Aleyamma A. Mundupadam (Valsa)<br>&amp; Abraham G. Mundupadam (Raju)</strong><br>Mundupadathu Villa,<br>Thottumugham P.O., Mynagappally</p>
+      </div>
+      <div class="hotel">
+        <h5>Bride’s Family</h5>
+        <p><strong>Mrs. Mini Devadas<br>&amp; Mr. Devadas Cheeroth</strong><br>Devaamritham House,<br>Kanmanam P.O., Malappuram</p>
+      </div>
+    </div>
+    <div class="contact-strip reveal" aria-label="Contact details">
+      <div class="contact-strip-title">Contact</div>
+      <div class="contact-links">
+        <a class="contact-link" href="https://wa.me/919895987872" target="_blank" rel="noopener">
+          <svg class="contact-icon whatsapp-icon" aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M12 2C6.49 2 2 6.03 2 11.01c0 1.79.56 3.5 1.61 4.96L2 22l6.18-1.54c1.38.74 2.93 1.13 4.46 1.13 5.51 0 10-4.03 10-9.01S17.51 2 12 2zm0 16.5c-1.36 0-2.69-.35-3.84-1.01l-.28-.16-3.66.91.98-3.56-.18-.29a7.96 7.96 0 0 1-1.23-4.38C3.79 7.24 7.41 4.5 12 4.5c4.59 0 8.21 2.74 8.21 6.51S16.59 18.5 12 18.5zm4.15-4.84c-.23-.12-1.39-.69-1.61-.77-.22-.08-.38-.12-.54.12-.16.23-.62.77-.76.93-.14.16-.28.18-.52.06-.23-.12-.99-.37-1.88-1.18-.69-.62-1.15-1.39-1.29-1.63-.14-.23-.01-.36.11-.48.11-.11.23-.28.35-.42.12-.14.16-.23.23-.38.08-.16.04-.29-.02-.41-.06-.12-.54-1.28-.74-1.75-.2-.47-.4-.4-.54-.41h-.46c-.16 0-.41.06-.63.29-.22.23-.85.83-.85 2.02 0 1.19.87 2.34.99 2.5.12.16 1.7 2.59 4.11 3.63.57.25 1.01.4 1.36.51.57.18 1.09.15 1.5.09.46-.07 1.39-.57 1.59-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.45-.28z"/>
+          </svg>
+          98959 87872
+        </a>
+        <a class="contact-link" href="https://wa.me/971585954112" target="_blank" rel="noopener">
+          <svg class="contact-icon whatsapp-icon" aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M12 2C6.49 2 2 6.03 2 11.01c0 1.79.56 3.5 1.61 4.96L2 22l6.18-1.54c1.38.74 2.93 1.13 4.46 1.13 5.51 0 10-4.03 10-9.01S17.51 2 12 2zm0 16.5c-1.36 0-2.69-.35-3.84-1.01l-.28-.16-3.66.91.98-3.56-.18-.29a7.96 7.96 0 0 1-1.23-4.38C3.79 7.24 7.41 4.5 12 4.5c4.59 0 8.21 2.74 8.21 6.51S16.59 18.5 12 18.5zm4.15-4.84c-.23-.12-1.39-.69-1.61-.77-.22-.08-.38-.12-.54.12-.16.23-.62.77-.76.93-.14.16-.28.18-.52.06-.23-.12-.99-.37-1.88-1.18-.69-.62-1.15-1.39-1.29-1.63-.14-.23-.01-.36.11-.48.11-.11.23-.28.35-.42.12-.14.16-.23.23-.38.08-.16.04-.29-.02-.41-.06-.12-.54-1.28-.74-1.75-.2-.47-.4-.4-.54-.41h-.46c-.16 0-.41.06-.63.29-.22.23-.85.83-.85 2.02 0 1.19.87 2.34.99 2.5.12.16 1.7 2.59 4.11 3.63.57.25 1.01.4 1.36.51.57.18 1.09.15 1.5.09.46-.07 1.39-.57 1.59-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.45-.28z"/>
+          </svg>
+          Dubai · +971 58 595 4112
+        </a>
+        <a class="contact-link email-link" href="mailto:allen.abraham05@gmail.com">
+          <svg class="contact-icon email-icon" aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm16 3.2-8 5.1-8-5.1V17h16V8.2zM4.7 7l7.3 4.7L19.3 7H4.7z"/>
+          </svg>
+          allen.abraham05@gmail.com
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAYLIST -->
+  <section id="playlist">
+    <h3 class="section-title script reveal">Our Playlist</h3>
+    <div class="eyebrow sub-eyebrow reveal">Request a song for the celebration</div>
+    <div class="playlist-card reveal">
+      <form id="songForm">
+        <div class="field-row">
+          <input type="text" id="reqName" placeholder="Your name" required>
+          <input type="text" id="reqArtist" placeholder="Artist" required>
+        </div>
+        <input type="text" id="reqSong" placeholder="Song title" required>
+        <button type="submit" class="btn">🎵 Add to playlist</button>
+      </form>
+      <div class="song-list" id="songList"></div>
+      <div class="empty-note" id="emptyNote">♪ No songs yet — be the first to add one!</div>
+    </div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section id="count">
+    <h3 class="section-title script reveal">See you in</h3>
+    <div class="eyebrow sub-eyebrow reveal" style="margin-bottom:.6rem;">Until Sangeet Night · 15 August 2026</div>
+    <div class="countdown reveal" id="countdown" aria-live="polite">
+      <div class="cd-cell"><div class="cd-num" id="cdD">00</div><div class="cd-label">Days</div></div>
+      <div class="cd-cell"><div class="cd-num" id="cdH">00</div><div class="cd-label">Hours</div></div>
+      <div class="cd-cell"><div class="cd-num" id="cdM">00</div><div class="cd-label">Minutes</div></div>
+      <div class="cd-cell"><div class="cd-num" id="cdS">00</div><div class="cd-label">Seconds</div></div>
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section id="rsvp">
+    <h3 class="section-title script reveal">R.S.V.P.</h3>
+    <div class="eyebrow sub-eyebrow reveal">Are you attending?</div>
+    <div class="rsvp-card reveal">
+      <p class="deadline">Kindly let us know if you can join us in prayer and celebration</p>
+      <div class="cal-links">
+        <a href="#" id="icsLink">🗓 Add to Calendar</a>
+        <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=Sangeet+Night+%E2%80%94+Midhila+%26+Allen&dates=20260815T143000Z/20260815T200000Z&location=Sydney+Hall,+Park+Regis+Kris+Kin+Hotel,+Opp.+Burjuman,+Dubai" target="_blank" rel="noopener">🗓 Google Calendar</a>
+      </div>
+      <form id="rsvpForm">
+        <input type="text" id="rsvpName" placeholder="Your full name" required>
+        <input type="email" id="rsvpEmail" placeholder="Email address" required>
+        <div class="attend-row">
+          <button type="button" class="attend-btn" data-val="yes">🥂 Joyfully attending</button>
+          <button type="button" class="attend-btn" data-val="no">🎁 Can’t make it, but I’ll send a gift</button>
+        </div>
+        <textarea id="rsvpNotes" rows="3" placeholder="Any notes for the couple?"></textarea>
+        <button type="submit" class="btn">Submit RSVP</button>
+      </form>
+      <div class="rsvp-success" id="rsvpSuccess">
+        <div class="script">Thank you!</div>
+        <p id="rsvpSuccessMsg">Your response has been received with love.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="script" style="font-size:2rem;">Midhila &amp; Allen</div>
+    <div class="eyebrow" style="margin-top:.5rem;">Sangeet Night · 15 August 2026</div>
+    <div class="eyebrow" style="margin-top:.4rem;">Sydney Hall · Dubai</div>
+    <div class="eyebrow" style="margin-top:1rem;font-size:.56rem;">An evening of music, dance &amp; togetherness</div>
+  </footer>
+
+</main>
+
+<audio id="bg-music" src="vaseegara.mp3" preload="auto" loop></audio>
+
+<script src="main.js"></script>
+<script>
+/* ── Override countdown for Sangeet Night: 15 Aug 2026 18:30 GST (UTC+4) ── */
+const sangeetTarget = new Date('2026-08-15T18:30:00+04:00').getTime();
+function sangeetTick(){
+  let diff = Math.max(0, sangeetTarget - Date.now());
+  const d = Math.floor(diff/86400000); diff -= d*86400000;
+  const h = Math.floor(diff/3600000);  diff -= h*3600000;
+  const m = Math.floor(diff/60000);    diff -= m*60000;
+  const s = Math.floor(diff/1000);
+  if(document.getElementById('cdD')){
+    cdD.textContent = String(d).padStart(2,'0');
+    cdH.textContent = String(h).padStart(2,'0');
+    cdM.textContent = String(m).padStart(2,'0');
+    cdS.textContent = String(s).padStart(2,'0');
+  }
+}
+sangeetTick(); setInterval(sangeetTick,1000);
+
+/* ── ICS download for Sangeet Night ── */
+const icsEl = document.getElementById('icsLink');
+if(icsEl){
+  icsEl.addEventListener('click', e => {
+    e.preventDefault();
+    const ics = [
+      'BEGIN:VCALENDAR','VERSION:2.0','BEGIN:VEVENT',
+      'DTSTART:20260815T183000Z',
+      'DTEND:20260815T200000Z',
+      'SUMMARY:Sangeet Night — Midhila & Allen',
+      'LOCATION:Sydney Hall, Park Regis Kris Kin Hotel, Opp. Burjuman, Dubai',
+      'DESCRIPTION:An evening of music\\, dance & togetherness.',
+      'END:VEVENT','END:VCALENDAR'
+    ].join('\r\n');
+    const blob = new Blob([ics], {type:'text/calendar'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'sangeet-night.ics';
+    a.click(); URL.revokeObjectURL(url);
+  });
+}
+</script>
+</body>
+</html>
