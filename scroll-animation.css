@@ -1,59 +1,24 @@
 :root {
   --bg: #060606;
-  --navy-deep: #0c0e28;
-  --navy: #12163f;
-  --navy-soft: #1b2154;
-  --gold: #d4b483;
-  --gold-soft: #e8d3ab;
-  --gold-dim: #9c8352;
-  --cream: #f3ede0;
-  --ivory: #faf6ec;
-
-  --green-1: #e4efd2;
-  --green-2: #ccdcbb;
-  --green-3: #bacfa6;
-  --green-4: #a2ba96;
-  --green-5: #8eaa93;
-  --green-6: #7fa08f;
-  --green-7: #5d8272;
-
-  --pink-1: #f5e2e6;
-  --pink-2: #efc9d6;
-  --pink-3: #e7b1be;
-  --pink-4: #e3a0b2;
-  --pink-5: #d77ca8;
-  --pink-6: #cf799e;
-  --pink-7: #b25478;
+  --ink: #f6efe2;
+  --gold: #d8b26a;
+  --muted: rgba(246, 239, 226, 0.72);
 }
 
 * {
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+html,
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  background: var(--bg);
 }
 
 body {
-  position: relative;
-  margin: 0;
   overflow-x: hidden;
-  color: var(--ivory);
-  font-family: "Cormorant Garamond", serif;
-  background:
-    radial-gradient(ellipse 900px 500px at 50% -10%, #232a67 0%, transparent 60%),
-    linear-gradient(180deg, var(--navy-deep) 0%, var(--navy) 45%, var(--navy-deep) 100%);
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(6, 8, 22, 0.46) 0%, rgba(6, 8, 22, 0.36) 36%, rgba(6, 8, 22, 0.52) 100%),
-    radial-gradient(ellipse 120% 70% at 50% 8%, rgba(25, 34, 84, 0.24) 0%, rgba(6, 8, 22, 0) 70%);
 }
 
 #frame-canvas {
@@ -63,484 +28,304 @@ body::before {
   height: 100vh;
   display: block;
   background: var(--bg);
-  z-index: 0;
-}
-
-.stars {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.55;
-}
-
-.stars span {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: var(--gold-soft);
-  border-radius: 50%;
-  animation: twinkle 4s ease-in-out infinite;
-}
-
-#invite-flow {
-  position: relative;
-  z-index: 2;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-#intro-section {
-  height: 700px;
-  min-height: 700px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding: clamp(18px, 4vh, 40px) 28px 0;
-}
-
-.intro-text-area {
-  display: inline-block;
-  margin: 0 auto;
-  padding: 14px 22px 12px;
-  border-radius: 12px;
-  background: rgba(7, 10, 28, 0.5);
-  border: 1px solid rgba(232, 211, 171, 0.2);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(2px);
-}
-
-#details-section {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(24px);
-  pointer-events: none;
-  transition: opacity 340ms ease, transform 340ms ease, visibility 340ms ease;
-}
-
-#details-section .hero-details {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 20px 28px 0;
-  text-align: center;
-}
-
-#details-section.is-active {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-#intro-section {
-  opacity: 0;
-  visibility: visible;
-  transform: translateY(0);
-  transition: opacity 340ms ease, transform 340ms ease, visibility 340ms ease;
-}
-
-#intro-section.is-inactive {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-18px);
-  pointer-events: none;
-}
-
-#intro-tagline-section {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 8px 28px 18px;
-  text-align: center;
-  border-radius: 12px;
-  background: rgba(7, 10, 28, 0.48);
-  border: 1px solid rgba(232, 211, 171, 0.16);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.24);
-  backdrop-filter: blur(2px);
-  opacity: 0;
-  visibility: visible;
-  transform: translateY(0);
-  transition: opacity 340ms ease, transform 340ms ease, visibility 340ms ease;
-}
-
-#intro-tagline-section .intro-names {
-  margin: 0;
-  font-family: "Cormorant SC", serif;
-  font-weight: 700;
-  font-size: clamp(2rem, 6.6vw, 3.3rem);
-  letter-spacing: 0.07em;
-  line-height: 0.95;
-  text-transform: uppercase;
-  white-space: nowrap;
-  background: linear-gradient(180deg, #fff 0%, var(--gold-soft) 55%, var(--gold-dim) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 2px 20px rgba(6, 7, 20, 0.95), 0 0 40px rgba(212, 180, 131, 0.28);
-  -webkit-text-stroke: 0.5px rgba(8, 10, 30, 0.45);
-}
-
-#intro-tagline-section.is-inactive {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-14px);
-  pointer-events: none;
-}
-
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0.15;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1.6);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .stars span {
-    animation: none;
-    opacity: 0.4;
-  }
-
-  * {
-    animation-duration: 0.001ms !important;
-    transition-duration: 0.001ms !important;
-  }
-}
-
-section {
-  position: relative;
-  z-index: 2;
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 64px 28px;
-  text-align: center;
-}
-
-.rule {
-  width: 120px;
-  height: 1px;
-  margin: 22px auto;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-}
-
-.eyebrow {
-  font-family: "Cormorant Garamond", serif;
-  font-size: clamp(1rem, 2.4vw, 1.25rem);
-  color: var(--cream);
-  font-style: italic;
-  letter-spacing: 0;
-  text-transform: none;
-  opacity: 0.95;
-  margin: 0 0 6px;
-  text-shadow: 0 2px 16px rgba(6, 7, 20, 0.98);
-}
-
-h1.names {
-  font-family: "Cormorant SC", serif;
-  font-weight: 700;
-  font-size: clamp(2.6rem, 8vw, 3.0rem);
-  letter-spacing: 0.06em;
-  margin: 0;
-  background: linear-gradient(180deg, #fff 0%, var(--gold-soft) 55%, var(--gold-dim) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 2px 18px rgba(6, 7, 20, 0.9), 0 0 40px rgba(212, 180, 131, 0.25);
-}
-
-.tagline {
-  font-size: clamp(0.98rem, 2.2vw, 1.22rem);
-  color: var(--ivory);
-  font-style: italic;
-  opacity: 0.94;
-  max-width: 480px;
-  margin: 10px auto 0;
-  line-height: 1.6;
-  text-shadow: 0 2px 14px rgba(6, 7, 20, 0.95);
-}
-
-.hero {
-  padding-top: 0;
-}
-
-.chandelier {
-  width: min(320px, 60vw);
-  margin: 0 auto 8px;
-  display: block;
-  opacity: 0.92;
-}
-
-.date-badge {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 10px;
-  margin: 28px 0 6px;
-  font-family: "Cormorant SC", serif;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold-soft);
-  font-size: clamp(0.9rem, 2vw, 1.05rem);
-}
-
-.date-badge .day {
-  font-size: clamp(2.6rem, 7vw, 3.6rem);
-  font-weight: 700;
-  color: #fff;
-  line-height: 1;
-  text-shadow: 0 0 24px rgba(212, 180, 131, 0.35);
-}
-
-.venue {
-  font-size: clamp(1rem, 2.4vw, 1.2rem);
-  letter-spacing: 0.04em;
-  color: var(--ivory);
-}
-
-.venue strong {
-  color: var(--gold-soft);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-}
-
-.venue small {
-  display: block;
-  margin-top: 4px;
-  color: var(--cream);
-  opacity: 0.75;
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.rsvp-note {
-  margin-top: 26px;
-  font-style: italic;
-  color: var(--cream);
-  opacity: 0.8;
-  font-size: 1.02rem;
-}
-
-.portrait-wrap {
-  position: relative;
-  max-width: 520px;
-  margin: 44px auto 0;
-}
-
-.portrait-frame {
-  position: relative;
-  border-radius: 6px;
-  padding: 10px;
-  background: linear-gradient(160deg, rgba(212, 180, 131, 0.35), rgba(212, 180, 131, 0.05));
-  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
-}
-
-.portrait-frame img {
-  display: block;
-  width: 100%;
-  border-radius: 3px;
-  filter: saturate(1.03);
-}
-
-.portrait-frame::before,
-.portrait-frame::after {
-  content: "";
-  position: absolute;
-  width: 34px;
-  height: 34px;
-  border: 1.5px solid var(--gold);
-  opacity: 0.7;
-}
-
-.portrait-frame::before {
-  top: -6px;
-  left: -6px;
-  border-right: none;
-  border-bottom: none;
-}
-
-.portrait-frame::after {
-  bottom: -6px;
-  right: -6px;
-  border-left: none;
-  border-top: none;
-}
-
-.caption {
-  margin-top: 16px;
-  font-family: "Marck Script", cursive;
-  color: var(--gold-soft);
-  font-size: 1.3rem;
-  opacity: 0.9;
-}
-
-.ornament-divider {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 0 28px;
-}
-
-.ornament-divider .line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
-}
-
-.ornament-divider svg {
-  opacity: 0.8;
-  flex-shrink: 0;
-}
-
-.quote-block {
-  font-family: "Marck Script", cursive;
-  font-size: clamp(1.8rem, 5vw, 2.6rem);
-  line-height: 1.35;
-  background: linear-gradient(90deg, var(--pink-4), var(--green-4));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin: 0 0 10px;
-}
-
-.dresscode {
-  margin-top: 38px;
-}
-
-.dresscode h2 {
-  font-family: "Cormorant SC", serif;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  font-size: 1rem;
-  color: var(--cream);
-  opacity: 0.75;
-  font-weight: 600;
-  margin: 0 0 18px;
-}
-
-.palette-row {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin: 0 auto 8px;
-  max-width: 520px;
-}
-
-.swatch {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.5);
-  transition: transform 0.25s ease;
-}
-
-.swatch:hover {
-  transform: translateY(-5px) scale(1.08);
-}
-
-.palette-label {
-  font-size: 0.92rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin: 6px 0 26px;
-}
-
-.palette-label.green {
-  color: var(--green-5);
-}
-
-.palette-label.pink {
-  color: var(--pink-5);
-}
-
-.directives {
-  list-style: none;
-  padding: 0;
-  margin: 30px 0;
-  font-size: clamp(1.05rem, 2.6vw, 1.3rem);
-  line-height: 2;
-  color: var(--ivory);
-}
-
-.directives li {
-  position: relative;
-}
-
-.directives li::before {
-  content: "✦";
-  color: var(--gold);
-  margin-right: 10px;
-  font-size: 0.8em;
-  vertical-align: middle;
-}
-
-.closing-verse {
-  font-style: italic;
-  color: var(--cream);
-  opacity: 0.85;
-  font-size: 1.1rem;
-  max-width: 480px;
-  margin: 30px auto 0;
-  line-height: 1.7;
-}
-
-.closing-verse .sign {
-  display: block;
-  margin-top: 18px;
-  font-family: "Marck Script", cursive;
-  font-size: 1.6rem;
-  color: var(--gold-soft);
-  opacity: 1;
-}
-
-footer {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  padding: 40px 20px 70px;
-  color: var(--gold-dim);
-  font-size: 0.85rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  opacity: 0.7;
 }
 
 #scroll-track {
-  position: relative;
-  z-index: 0;
   width: 1px;
   height: 100vh;
+}
+
+/* ---- Wedding invite overlay ---- */
+#invite-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.invite-section {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  text-align: center;
+  color: var(--ink);
   opacity: 0;
+  transform: translateY(40px);
+  will-change: opacity, transform;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 2px 24px rgba(0, 0, 0, 0.75);
+  /* Width of the text column: fit inside the letterboxed video frame. */
+  --content-w: min(90vw, calc(var(--frame-w, 90vw) - 8vw));
+}
+
+/* Readability scrim that darkens the busy background directly behind the text.
+   Lives on the section so it fades in/out together with the content. */
+.invite-section::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(96vw, calc(var(--frame-w, 96vw) + 2vw));
+  height: min(80vh, calc(var(--frame-h, 80vh) * 0.7));
+  background: radial-gradient(
+    ellipse 60% 50% at center,
+    rgba(6, 6, 6, 0.72) 0%,
+    rgba(6, 6, 6, 0.5) 45%,
+    rgba(6, 6, 6, 0) 75%
+  );
+  z-index: 0;
   pointer-events: none;
 }
 
-@media (max-width: 480px) {
-  #intro-tagline-section {
-    padding: 6px 20px 14px;
-  }
+.invite-section > * {
+  position: relative;
+  z-index: 1;
+  max-width: var(--content-w);
+  overflow-wrap: break-word;
+}
 
-  #details-section .hero-details {
-    padding: 14px 20px 0;
-  }
+.invite-section :where(p, div, h1, h2, ul, li) {
+  font-family: Georgia, "Times New Roman", serif;
+}
 
-  section {
-    padding: 48px 20px;
-  }
+/* --- Opening --- */
+.invite-section .stars {
+  font-size: clamp(1rem, calc(var(--frame-w, 90vw) * 0.045), 1.8rem);
+  letter-spacing: 0.3em;
+  color: var(--gold);
+}
 
-  .chandelier {
-    margin-bottom: 0;
+.invite-section .sub-header {
+  margin: 0.6rem 0 0;
+  font-style: italic;
+  font-size: clamp(0.95rem, calc(var(--frame-w, 90vw) * 0.04), 1.4rem);
+  color: var(--muted);
+}
+
+.invite-section .title {
+  margin: 0.3rem 0 0;
+  font-weight: 400;
+  /* Keep "Sangeet Night" on a single line: use the near-full frame width and a
+     font size that fits it; nowrap prevents the break. */
+  max-width: min(98vw, calc(var(--frame-w, 90vw) - 2vw));
+  white-space: nowrap;
+  font-size: clamp(2rem, calc(var(--frame-w, 90vw) * 0.115), 4.6rem);
+  line-height: 1.05;
+  color: var(--gold);
+}
+
+/* --- Names + invitation --- */
+.invite-section .names {
+  margin: 0;
+  font-weight: 400;
+  /* Sized off the video frame width so long names never spill past the frame. */
+  font-size: clamp(2rem, calc(var(--frame-w, 90vw) * 0.12), 4.6rem);
+  line-height: 1.1;
+}
+
+.invite-section .names span {
+  font-style: italic;
+  color: var(--gold);
+  padding: 0 0.15em;
+}
+
+.invite-section .invitation-text {
+  margin: 0.9rem 0 0;
+  font-style: italic;
+  font-size: clamp(1rem, calc(var(--frame-w, 90vw) * 0.042), 1.5rem);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.invite-section .invitation-text strong {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* --- Date & time --- */
+.invite-section .date-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 4vw, 2.2rem);
+  flex-wrap: wrap;
+}
+
+.invite-section .date-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.invite-section .day,
+.invite-section .month-year {
+  font-size: clamp(0.8rem, calc(var(--frame-w, 90vw) * 0.032), 1.15rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.invite-section .number {
+  font-size: clamp(3rem, calc(var(--frame-w, 90vw) * 0.16), 6rem);
+  line-height: 1;
+  color: var(--ink);
+}
+
+.invite-section .divider {
+  width: 1px;
+  align-self: stretch;
+  min-height: 3.5rem;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--gold) 20%,
+    var(--gold) 80%,
+    transparent
+  );
+}
+
+.invite-section .time {
+  font-size: clamp(1.6rem, calc(var(--frame-w, 90vw) * 0.08), 3rem);
+  color: var(--ink);
+}
+
+/* --- Location --- */
+.invite-section .location {
+  font-style: italic;
+  font-size: clamp(1rem, calc(var(--frame-w, 90vw) * 0.04), 1.4rem);
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.invite-section .maps-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 1.1rem;
+  padding: 0.6em 1.3em;
+  border: 1px solid rgba(216, 178, 106, 0.65);
+  border-radius: 999px;
+  background: rgba(6, 6, 6, 0.35);
+  color: var(--gold);
+  font-size: clamp(0.9rem, calc(var(--frame-w, 90vw) * 0.036), 1.2rem);
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  pointer-events: auto; /* overlay is click-through; re-enable for the button */
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.invite-section .maps-button:hover {
+  background: rgba(216, 178, 106, 0.18);
+  transform: translateY(-1px);
+}
+
+.invite-section .venue-name {
+  margin: 0.4rem 0;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: clamp(1rem, calc(var(--frame-w, 90vw) * 0.044), 1.6rem);
+  color: var(--ink);
+}
+
+/* --- Dress code --- */
+.invite-section .dress-code-box {
+  width: min(90vw, calc(var(--frame-w, 90vw) - 6vw));
+  padding: clamp(1.1rem, 3.5vw, 1.9rem) clamp(1.2rem, 4.5vw, 2.4rem);
+  border: 1px solid rgba(216, 178, 106, 0.4);
+  border-radius: 8px;
+  background: rgba(6, 6, 6, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 3vw, 1.6rem);
+}
+
+.invite-section .dress-code-title {
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+  font-size: clamp(1rem, calc(var(--frame-w, 90vw) * 0.044), 1.5rem);
+  color: var(--ink);
+}
+
+.invite-section .swatch-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.invite-section .swatches {
+  display: flex;
+  gap: clamp(4px, 1.4vw, 12px);
+  width: 100%;
+}
+
+.invite-section .swatches span {
+  flex: 1 1 0;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.invite-section .swatch-label {
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  text-transform: uppercase;
+  font-size: clamp(0.85rem, calc(var(--frame-w, 90vw) * 0.036), 1.25rem);
+}
+
+.invite-section .swatch-label--green {
+  color: #b9d59a;
+}
+
+.invite-section .swatch-label--pink {
+  color: #e9a7c1;
+}
+
+/* --- Fun section --- */
+.invite-section .energy-tag {
+  font-style: italic;
+  font-size: clamp(1.05rem, calc(var(--frame-w, 90vw) * 0.046), 1.6rem);
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.invite-section .checklist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.invite-section .checklist li {
+  font-size: clamp(0.95rem, calc(var(--frame-w, 90vw) * 0.04), 1.4rem);
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+/* --- Closing quote --- */
+.invite-section .quote {
+  margin-top: 1.4rem;
+  font-style: italic;
+  font-size: clamp(0.95rem, calc(var(--frame-w, 90vw) * 0.04), 1.35rem);
+  line-height: 1.7;
+  color: var(--gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invite-section {
+    transition: none;
+    transform: none;
   }
 }

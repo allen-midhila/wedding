@@ -3,22 +3,51 @@
   const FRAME_FOLDER = "frames";
   const FRAME_PREFIX = "frame_";
   const FRAME_EXT = ".jpg";
-  const INTRO_FADE_START_FRAME = 2;
-  const INTRO_FADE_END_FRAME = 12;
-  const INTRO_FADE_IN_DURATION_MS = 1200;
 
   const canvas = document.getElementById("frame-canvas");
   const ctx = canvas.getContext("2d", { alpha: false });
   const scrollTrack = document.getElementById("scroll-track");
-  const introSection = document.getElementById("intro-section");
-  const introTaglineSection = document.getElementById("intro-tagline-section");
-  const detailsSection = document.getElementById("details-section");
+  const overlay = document.getElementById("invite-overlay");
+
+  // Invite overlay: sections spread evenly across scroll, fading + rising in/out.
+  const sections = Array.from(document.querySelectorAll(".invite-section"));
+  const RISE = 40; // px each block travels as it enters/leaves
+  let sectionLayout = [];
+
+  function layoutSections() {
+    const n = sections.length;
+    if (n === 0) return;
+    // Peak positions span the whole scroll so content stays balanced to the last frame.
+    const start = 0.06;
+    const end = 0.97;
+    const span = n > 1 ? (end - start) / (n - 1) : 0;
+    // Overlapping windows keep a continuous cross-fade with no blank gaps.
+    const halfWidth = n > 1 ? span * 0.78 : 0.5;
+    sectionLayout = sections.map((el, i) => ({
+      el,
+      center: n > 1 ? start + span * i : 0.5,
+      halfWidth,
+    }));
+  }
+
+  function updateOverlay(progress) {
+    for (const s of sectionLayout) {
+      const d = (progress - s.center) / s.halfWidth; // -1..1 while visible
+      if (d <= -1 || d >= 1) {
+        if (s.el.style.opacity !== "0") s.el.style.opacity = "0";
+        continue;
+      }
+      const opacity = 0.5 * (1 + Math.cos(Math.PI * d));
+      const y = -RISE * d; // below on entry (+), above on exit (-)
+      s.el.style.opacity = opacity.toFixed(3);
+      s.el.style.transform = `translateY(${y.toFixed(1)}px)`;
+    }
+  }
 
   const images = new Array(TOTAL_FRAMES);
   let loadedCount = 0;
   let frameToRender = 0;
   let rafId = 0;
-  let introFadeInStartedAt = 0;
 
   function framePath(index) {
     const fileNumber = String(index + 1).padStart(6, "0");
@@ -29,17 +58,6 @@
     const viewportHeight = window.innerHeight;
     const scrollMultiplier = Math.max(6, Math.ceil(TOTAL_FRAMES / 45));
     scrollTrack.style.height = `${viewportHeight * scrollMultiplier}px`;
-  }
-
-  function syncInviteFlowHeight() {
-    const inviteFlow = document.getElementById("invite-flow");
-    if (!inviteFlow) {
-      return;
-    }
-
-    const viewportHeight = window.innerHeight;
-    const trackHeight = parseFloat(scrollTrack.style.height) || viewportHeight;
-    inviteFlow.style.minHeight = `${Math.max(viewportHeight, trackHeight)}px`;
   }
 
   function resizeCanvas() {
@@ -80,19 +98,13 @@
     ctx.imageSmoothingQuality = "high";
     ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
 
-    // Apply a subtle cinematic shade directly on the canvas for text readability.
-    const verticalShade = ctx.createLinearGradient(0, 0, 0, ch);
-    verticalShade.addColorStop(0, "rgba(8, 10, 30, 0.26)");
-    verticalShade.addColorStop(0.52, "rgba(8, 10, 30, 0.16)");
-    verticalShade.addColorStop(1, "rgba(8, 10, 30, 0.34)");
-    ctx.fillStyle = verticalShade;
-    ctx.fillRect(0, 0, cw, ch);
-
-    const centerGlow = ctx.createRadialGradient(cw * 0.5, ch * 0.12, 0, cw * 0.5, ch * 0.12, ch * 0.95);
-    centerGlow.addColorStop(0, "rgba(42, 55, 122, 0.12)");
-    centerGlow.addColorStop(1, "rgba(8, 10, 30, 0)");
-    ctx.fillStyle = centerGlow;
-    ctx.fillRect(0, 0, cw, ch);
+    // Expose the rendered (letterboxed) frame size in CSS px so the invite text
+    // can be constrained to the video area instead of the full window.
+    if (overlay) {
+      const cssScale = window.innerWidth / cw;
+      overlay.style.setProperty("--frame-w", `${Math.round(drawWidth * cssScale)}px`);
+      overlay.style.setProperty("--frame-h", `${Math.round(drawHeight * cssScale)}px`);
+    }
   }
 
   function scrollProgress() {
@@ -110,50 +122,16 @@
     if (rafId) return;
     rafId = window.requestAnimationFrame(() => {
       rafId = 0;
-      if (!introFadeInStartedAt) {
-        introFadeInStartedAt = performance.now();
-      }
-
-      const nextFrame = targetFrameFromScroll();
+      const progress = scrollProgress();
+      const nextFrame = Math.min(
+        TOTAL_FRAMES - 1,
+        Math.floor(progress * (TOTAL_FRAMES - 1))
+      );
       if (nextFrame !== frameToRender) {
         frameToRender = nextFrame;
       }
-
-      const showDetails = frameToRender >= 50;
-      const fadeOutFrameProgress = Math.max(0, frameToRender - INTRO_FADE_START_FRAME);
-      const fadeOutOpacity = Math.max(0, Math.min(1, 1 - fadeOutFrameProgress / INTRO_FADE_END_FRAME));
-      const fadeInProgress = Math.max(0, Math.min(1, (performance.now() - introFadeInStartedAt) / INTRO_FADE_IN_DURATION_MS));
-      const introOpacity = Math.min(fadeInProgress, fadeOutOpacity);
-
-      if (introSection) {
-        introSection.classList.toggle("is-inactive", showDetails);
-        if (showDetails) {
-          introSection.style.opacity = "0";
-          introSection.style.transform = "";
-        } else {
-          introSection.style.opacity = String(introOpacity);
-          introSection.style.transform = `translateY(${(1 - introOpacity) * 14}px)`;
-        }
-      }
-      if (introTaglineSection) {
-        introTaglineSection.classList.toggle("is-inactive", showDetails);
-        if (showDetails) {
-          introTaglineSection.style.opacity = "0";
-          introTaglineSection.style.transform = "";
-        } else {
-          introTaglineSection.style.opacity = String(introOpacity);
-          introTaglineSection.style.transform = `translateY(${(1 - introOpacity) * 10}px)`;
-        }
-      }
-      if (detailsSection) {
-        detailsSection.classList.toggle("is-active", showDetails);
-      }
-
-      if (!showDetails && fadeInProgress < 1) {
-        requestDraw();
-      }
-
       drawFrame(frameToRender);
+      updateOverlay(progress);
     });
   }
 
@@ -179,64 +157,58 @@
 
   window.addEventListener("resize", () => {
     updateScrollTrackHeight();
-    syncInviteFlowHeight();
     resizeCanvas();
     requestDraw();
   });
 
   window.addEventListener("scroll", requestDraw, { passive: true });
+  function setupAudio() {
+    const audio = document.getElementById("bg-audio");
+    if (!audio) return;
+    audio.volume = 0.7;
+
+    // Start playback on load. Browsers allow autoplay only when muted, so begin
+    // muted and unmute as soon as possible (audible autoplay is permitted in some
+    // app/webview contexts; otherwise the first gesture unmutes it).
+    audio.muted = true;
+    audio.play().catch(() => {});
+
+    let unmuted = false;
+    const unmute = () => {
+      if (unmuted) return;
+      audio.muted = false;
+      const p = audio.play();
+      if (p && typeof p.then === "function") {
+        p.then(() => {
+          if (!audio.muted && !audio.paused) unmuted = true;
+        }).catch(() => {});
+      }
+    };
+
+    // Try to unmute right away; if the browser blocks it, unmute on first gesture.
+    unmute();
+
+    const onGesture = () => {
+      unmute();
+      if (unmuted) {
+        window.removeEventListener("pointerdown", onGesture);
+        window.removeEventListener("keydown", onGesture);
+        window.removeEventListener("scroll", onGesture);
+        window.removeEventListener("touchstart", onGesture);
+      }
+    };
+    window.addEventListener("pointerdown", onGesture, { passive: true });
+    window.addEventListener("keydown", onGesture);
+    window.addEventListener("scroll", onGesture, { passive: true });
+    window.addEventListener("touchstart", onGesture, { passive: true });
+  }
+
   window.addEventListener("load", () => {
     updateScrollTrackHeight();
-    syncInviteFlowHeight();
+    layoutSections();
     resizeCanvas();
     preloadFrames();
     requestDraw();
-  });
-})();
-
-(() => {
-  function initStars() {
-    const starField = document.getElementById("stars");
-    if (!starField) {
-      return;
-    }
-
-    const count = 70;
-    for (let i = 0; i < count; i += 1) {
-      const star = document.createElement("span");
-      star.style.top = `${Math.random() * 100}%`;
-      star.style.left = `${Math.random() * 100}%`;
-      star.style.animationDelay = `${Math.random() * 4}s`;
-      star.style.opacity = (0.2 + Math.random() * 0.6).toFixed(2);
-      starField.appendChild(star);
-    }
-  }
-
-  function fillRow(id, cssVars, rootStyles) {
-    const row = document.getElementById(id);
-    if (!row) {
-      return;
-    }
-
-    cssVars.forEach((cssVar) => {
-      const swatch = document.createElement("div");
-      swatch.className = "swatch";
-      swatch.style.background = rootStyles.getPropertyValue(cssVar).trim();
-      row.appendChild(swatch);
-    });
-  }
-
-  function initPalette() {
-    const rootStyles = getComputedStyle(document.documentElement);
-    const greens = ["--green-1", "--green-2", "--green-3", "--green-4", "--green-5", "--green-6", "--green-7"];
-    const pinks = ["--pink-1", "--pink-2", "--pink-3", "--pink-4", "--pink-5", "--pink-6", "--pink-7"];
-
-    fillRow("greenRow", greens, rootStyles);
-    fillRow("pinkRow", pinks, rootStyles);
-  }
-
-  window.addEventListener("load", () => {
-    initStars();
-    initPalette();
+    setupAudio();
   });
 })();

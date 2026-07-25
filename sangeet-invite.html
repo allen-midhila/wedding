@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sangeet Night Invitation - Midhila & Allen</title>
+  <link rel="stylesheet" href="scroll-animation.css">
+</head>
+<body>
+  <canvas id="frame-canvas" aria-label="Scroll animation"></canvas>
+  <audio id="bg-audio" src="rang-lageya.mp3" preload="auto" loop></audio>
+
+  <div id="invite-overlay">
+    <!-- Each .invite-section is spread evenly across the scroll and fades+rises in/out. -->
+    <section class="invite-section">
+      <div class="stars">&#10024; &#10024; &#10024;</div>
+      <p class="sub-header">Join us under the stars for our</p>
+      <h1 class="title">Sangeet Night</h1>
+    </section>
+
+    <section class="invite-section">
+      <div class="names">Midhila <br/><span>&amp;</span><br/> Allen</div>
+      <p class="invitation-text">
+        joyfully invite you to celebrate an evening of<br>
+        <strong>music, dance &amp; togetherness</strong>.
+      </p>
+    </section>
+
+    <section class="invite-section">
+      <div class="event-details">
+        <div class="date-time">
+          <div class="date-box">
+            <div class="day">SATURDAY</div>
+            <div class="number">15</div>
+            <div class="month-year">AUGUST, 2026</div>
+          </div>
+          <div class="divider"></div>
+          <div class="time">6:30 PM</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="invite-section">
+      <div class="location">
+        at
+        <div class="venue-name">SYDNEY HALL, <br/>PARK REGIS KRIS KIN HOTEL</div>
+        OPP. BURJUMAN, DUBAI
+      </div>
+      <a class="maps-button" href="https://maps.app.goo.gl/4nXkfM8aT97mcenj7"
+         target="_blank" rel="noopener">&#128205; Open in Maps</a>
+    </section>
+
+    <section class="invite-section">
+      <div class="dress-code-box">
+        <div class="dress-code-title">Dress Code</div>
+
+        <div class="swatch-group">
+          <div class="swatches swatches--green">
+            <span style="background:#e2efc4"></span>
+            <span style="background:#d3e6a8"></span>
+            <span style="background:#c2da95"></span>
+            <span style="background:#acca84"></span>
+            <span style="background:#93be86"></span>
+            <span style="background:#7ba97c"></span>
+            <span style="background:#5f8a6d"></span>
+          </div>
+          <div class="swatch-label swatch-label--green">Pastel Green</div>
+        </div>
+
+        <div class="swatch-group">
+          <div class="swatches swatches--pink">
+            <span style="background:#f8e5ea"></span>
+            <span style="background:#f3cedb"></span>
+            <span style="background:#eeb1c8"></span>
+            <span style="background:#e894b4"></span>
+            <span style="background:#dd76a0"></span>
+            <span style="background:#cf5f8f"></span>
+            <span style="background:#bd4f7f"></span>
+          </div>
+          <div class="swatch-label swatch-label--pink">Pink</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="invite-section">
+      <div class="fun-section">
+        <div class="energy-tag">"Yes, time to show up with full energy!"</div>
+        <ul class="checklist">
+          <li>&#128131; Cheer for Team Bride &amp; Team Groom</li>
+          <li>&#127829; Eat like it's your cheat day</li>
+          <li>&#128516; Laugh until your cheeks hurt</li>
+          <li>&#128248; Make memories we'll never forget</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="invite-section">
+      <p class="invitation-text">
+        Your presence will make our celebration truly special.<br>
+        We look forward to celebrating with you.
+      </p>
+      <div class="quote">
+        "The pages may turn, the day may end, but what we built together will stay written in memory."
+      </div>
+    </section>
+  </div>
+
+  <div id="scroll-track" aria-hidden="true"></div>
+  <script src="scroll-animation.js"></script>
+</body>
+</html>
