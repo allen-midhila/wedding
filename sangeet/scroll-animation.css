@@ -89,58 +89,180 @@ body {
   overflow-wrap: break-word;
 }
 
-.invite-section .eyebrow {
-  margin: 0;
+.invite-section :where(p, div, h1, h2, ul, li) {
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(0.75rem, calc(var(--frame-w, 90vw) * 0.032), 1.1rem);
-  letter-spacing: 0.28em;
-  /* pull the trailing tracking back so centering stays true */
-  text-indent: 0.28em;
-  text-transform: uppercase;
+}
+
+/* --- Opening --- */
+.invite-section .stars {
+  font-size: clamp(1rem, calc(var(--frame-w, 90vw) * 0.045), 1.8rem);
+  letter-spacing: 0.3em;
   color: var(--gold);
 }
 
-.invite-section .ornament {
-  margin: 0;
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
-  color: var(--gold);
-}
-
-.invite-section .lede {
-  margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1rem, 2vw, 1.35rem);
+.invite-section .sub-header {
+  margin: 0.6rem 0 0;
   font-style: italic;
+  font-size: clamp(0.95rem, calc(var(--frame-w, 90vw) * 0.04), 1.4rem);
+  color: var(--muted);
+}
+
+.invite-section .title {
+  margin: 0.3rem 0 0;
+  font-weight: 400;
+  font-size: clamp(2.2rem, calc(var(--frame-w, 90vw) * 0.13), 5rem);
+  line-height: 1.05;
+  color: var(--gold);
+}
+
+/* --- Names + invitation --- */
+.invite-section .names {
+  margin: 0;
+  font-weight: 400;
+  /* Sized off the video frame width so long names never spill past the frame. */
+  font-size: clamp(2rem, calc(var(--frame-w, 90vw) * 0.12), 4.6rem);
+  line-height: 1.1;
+}
+
+.invite-section .names span {
+  font-style: italic;
+  color: var(--gold);
+  padding: 0 0.15em;
+}
+
+.invite-section .invitation-text {
+  margin: 0.9rem 0 0;
+  font-style: italic;
+  font-size: clamp(1rem, calc(var(--frame-w, 90vw) * 0.042), 1.5rem);
   line-height: 1.6;
   color: var(--muted);
 }
 
-.invite-section .names {
-  margin: 0.2rem 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 400;
-  /* Sized off the video frame width so long names never spill past the frame. */
-  font-size: clamp(1.9rem, calc(var(--frame-w, 90vw) * 0.11), 4.4rem);
-  line-height: 1.08;
-  letter-spacing: 0;
-  hyphens: auto;
+.invite-section .invitation-text strong {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--ink);
 }
 
-.invite-section .names .amp {
-  display: block;
-  margin: 0.25rem 0;
-  font-size: 0.5em;
-  font-style: italic;
+/* --- Date & time --- */
+.invite-section .date-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 4vw, 2.2rem);
+  flex-wrap: wrap;
+}
+
+.invite-section .date-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.invite-section .day,
+.invite-section .month-year {
+  font-size: clamp(0.8rem, calc(var(--frame-w, 90vw) * 0.032), 1.15rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   color: var(--gold);
 }
 
-.invite-section .headline {
+.invite-section .number {
+  font-size: clamp(3rem, calc(var(--frame-w, 90vw) * 0.16), 6rem);
+  line-height: 1;
+  color: var(--ink);
+}
+
+.invite-section .divider {
+  width: 1px;
+  align-self: stretch;
+  min-height: 3.5rem;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--gold) 20%,
+    var(--gold) 80%,
+    transparent
+  );
+}
+
+.invite-section .time {
+  font-size: clamp(1.6rem, calc(var(--frame-w, 90vw) * 0.08), 3rem);
+  color: var(--ink);
+}
+
+/* --- Location --- */
+.invite-section .location {
+  font-style: italic;
+  font-size: clamp(1rem, calc(var(--frame-w, 90vw) * 0.04), 1.4rem);
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.invite-section .venue-name {
+  margin: 0.4rem 0;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: clamp(1.15rem, calc(var(--frame-w, 90vw) * 0.052), 1.9rem);
+  color: var(--ink);
+}
+
+/* --- Dress code --- */
+.invite-section .dress-code-box {
+  padding: clamp(1rem, 3vw, 1.6rem) clamp(1.4rem, 5vw, 2.6rem);
+  border: 1px solid rgba(216, 178, 106, 0.55);
+  border-radius: 6px;
+  background: rgba(6, 6, 6, 0.28);
+}
+
+.invite-section .dress-code-title {
+  font-style: italic;
+  font-size: clamp(0.9rem, calc(var(--frame-w, 90vw) * 0.036), 1.25rem);
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+.invite-section .dress-code-value {
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: clamp(1.1rem, calc(var(--frame-w, 90vw) * 0.05), 1.9rem);
+  color: var(--gold);
+}
+
+/* --- Fun section --- */
+.invite-section .energy-tag {
+  font-style: italic;
+  font-size: clamp(1.05rem, calc(var(--frame-w, 90vw) * 0.046), 1.6rem);
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.invite-section .checklist {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 400;
-  font-size: clamp(1.4rem, calc(var(--frame-w, 90vw) * 0.07), 2.8rem);
-  line-height: 1.25;
-  letter-spacing: 0.02em;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.invite-section .checklist li {
+  font-size: clamp(0.95rem, calc(var(--frame-w, 90vw) * 0.04), 1.4rem);
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+/* --- Closing quote --- */
+.invite-section .quote {
+  margin-top: 1.4rem;
+  font-style: italic;
+  font-size: clamp(0.95rem, calc(var(--frame-w, 90vw) * 0.04), 1.35rem);
+  line-height: 1.7;
+  color: var(--gold);
 }
 
 @media (prefers-reduced-motion: reduce) {
