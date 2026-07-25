@@ -3,6 +3,7 @@
   --ink: #f6efe2;
   --gold: #d8b26a;
   --muted: rgba(246, 239, 226, 0.72);
+  --app-vh: 100dvh;
 }
 
 * {
@@ -25,20 +26,21 @@ body {
   position: fixed;
   inset: 0;
   width: 100vw;
-  height: 100vh;
+  height: var(--app-vh);
   display: block;
   background: var(--bg);
 }
 
 #scroll-track {
   width: 1px;
-  height: 100vh;
+  height: var(--app-vh);
 }
 
 /* ---- Wedding invite overlay ---- */
 #invite-overlay {
   position: fixed;
   inset: 0;
+  height: var(--app-vh);
   z-index: 2;
   pointer-events: none;
   overflow: hidden;

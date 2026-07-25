@@ -8,6 +8,9 @@
   const ctx = canvas.getContext("2d", { alpha: false });
   const scrollTrack = document.getElementById("scroll-track");
   const overlay = document.getElementById("invite-overlay");
+  let layoutViewportHeight = 0;
+  let layoutViewportWidth = 0;
+  let scrollRange = 1;
 
   // Invite overlay: sections spread evenly across scroll, fading + rising in/out.
   const sections = Array.from(document.querySelectorAll(".invite-section"));
@@ -49,27 +52,51 @@
   let frameToRender = 0;
   let rafId = 0;
 
+  function viewportWidth() {
+    return Math.max(1, Math.round(window.visualViewport?.width || window.innerWidth));
+  }
+
+  function viewportHeight() {
+    return Math.max(1, Math.round(window.visualViewport?.height || window.innerHeight));
+  }
+
+  function applyViewportVars() {
+    const vh = viewportHeight();
+    document.documentElement.style.setProperty("--app-vh", `${vh}px`);
+  }
+
   function framePath(index) {
     const fileNumber = String(index + 1).padStart(6, "0");
     return `${FRAME_FOLDER}/${FRAME_PREFIX}${fileNumber}${FRAME_EXT}`;
   }
 
   function updateScrollTrackHeight() {
-    const viewportHeight = window.innerHeight;
+    const viewportHeightPx = layoutViewportHeight || viewportHeight();
     const scrollMultiplier = Math.max(6, Math.ceil(TOTAL_FRAMES / 45));
-    scrollTrack.style.height = `${viewportHeight * scrollMultiplier}px`;
+    const totalScrollHeight = viewportHeightPx * scrollMultiplier;
+    scrollTrack.style.height = `${totalScrollHeight}px`;
+    scrollRange = Math.max(1, totalScrollHeight - viewportHeightPx);
+  }
+
+  function recalcLayoutViewport() {
+    layoutViewportWidth = viewportWidth();
+    layoutViewportHeight = viewportHeight();
+    applyViewportVars();
+    updateScrollTrackHeight();
   }
 
   function resizeCanvas() {
     const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
-    const width = Math.floor(window.innerWidth * dpr);
-    const height = Math.floor(window.innerHeight * dpr);
+    const cssWidth = viewportWidth();
+    const cssHeight = viewportHeight();
+    const width = Math.floor(cssWidth * dpr);
+    const height = Math.floor(cssHeight * dpr);
 
     if (canvas.width !== width || canvas.height !== height) {
       canvas.width = width;
       canvas.height = height;
-      canvas.style.width = `${window.innerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
+      canvas.style.width = `${cssWidth}px`;
+      canvas.style.height = `${cssHeight}px`;
     }
 
     drawFrame(frameToRender);
@@ -101,16 +128,15 @@
     // Expose the rendered (letterboxed) frame size in CSS px so the invite text
     // can be constrained to the video area instead of the full window.
     if (overlay) {
-      const cssScale = window.innerWidth / cw;
+      const cssScale = viewportWidth() / cw;
       overlay.style.setProperty("--frame-w", `${Math.round(drawWidth * cssScale)}px`);
       overlay.style.setProperty("--frame-h", `${Math.round(drawHeight * cssScale)}px`);
     }
   }
 
   function scrollProgress() {
-    const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    const y = Math.min(maxScroll, Math.max(0, window.scrollY || window.pageYOffset));
-    return y / maxScroll;
+    const y = Math.min(scrollRange, Math.max(0, window.scrollY || window.pageYOffset));
+    return y / scrollRange;
   }
 
   function targetFrameFromScroll() {
@@ -156,10 +182,24 @@
   }
 
   window.addEventListener("resize", () => {
-    updateScrollTrackHeight();
+    applyViewportVars();
     resizeCanvas();
     requestDraw();
   });
+
+  window.addEventListener("orientationchange", () => {
+    recalcLayoutViewport();
+    resizeCanvas();
+    requestDraw();
+  });
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", () => {
+      applyViewportVars();
+      resizeCanvas();
+      requestDraw();
+    });
+  }
 
   window.addEventListener("scroll", requestDraw, { passive: true });
   function setupAudio() {
@@ -204,7 +244,7 @@
   }
 
   window.addEventListener("load", () => {
-    updateScrollTrackHeight();
+    recalcLayoutViewport();
     layoutSections();
     resizeCanvas();
     preloadFrames();
