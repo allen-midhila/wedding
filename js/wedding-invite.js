@@ -2,6 +2,8 @@
 (function(){
   "use strict";
 
+  const inviteUrl = document.body?.dataset?.inviteUrl || 'invite.html';
+
   const petalLayer = document.getElementById('petals');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let petalTimer = null;
@@ -657,7 +659,7 @@
     playWinningTone();
     showOverlay('You are invited!', 'Allen made it to Midhila. The celebration awaits.', 'Open invitation', ()=>{
       hideOverlay();
-      window.location.href = 'sangeet-invite.html';
+      window.location.href = inviteUrl;
     }, {variant:'game-win'});
   }
 
@@ -750,7 +752,7 @@
   document.getElementById('skip-game-btn').addEventListener('click', ()=>{
     running = false;
     stopArcadeMusic();
-    window.location.href = 'sangeet-invite.html';
+    window.location.href = inviteUrl;
   });
 
   /* =====================================================
