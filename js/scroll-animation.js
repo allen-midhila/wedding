@@ -28,6 +28,7 @@
     const halfWidth = n > 1 ? span * 0.78 : 0.5;
     sectionLayout = sections.map((el, i) => ({
       el,
+      index: i,
       center: n > 1 ? start + span * i : 0.5,
       halfWidth,
     }));
@@ -35,6 +36,13 @@
 
   function updateOverlay(progress) {
     for (const s of sectionLayout) {
+      // Keep the opening section crisp when the page first loads.
+      if (s.index === 0 && progress <= 0.01) {
+        s.el.style.opacity = "1";
+        s.el.style.transform = "translateY(0px)";
+        continue;
+      }
+
       const d = (progress - s.center) / s.halfWidth; // -1..1 while visible
       if (d <= -1 || d >= 1) {
         if (s.el.style.opacity !== "0") s.el.style.opacity = "0";
