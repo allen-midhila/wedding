@@ -143,41 +143,104 @@ const songForm = document.getElementById('songForm');
 const songList = document.getElementById('songList');
 const emptyNote = document.getElementById('emptyNote');
 const songs = [];
+
+const FORM_SUBMIT_ACTION_URL = 'https://script.google.com/macros/s/AKfycbxfrgcIgrOinJMouFcC8lt3ad_E608kaU1JWZcMA_mqCytaUYAbyS0H0CTHRkFXPUS1Qg/exec';
+const SONG_GOOGLE_FORM_FIELDS = {
+  name: 'name',
+  artist: 'artist',
+  song: 'song',
+  submittedAt: 'submittedAt',
+  action: 'action'
+};
+
+function sendSongToGoogleForm(payload){
+  if(!FORM_SUBMIT_ACTION_URL) return Promise.resolve(false);
+
+  const form = document.createElement('form');
+  form.action = FORM_SUBMIT_ACTION_URL;
+  form.method = 'POST';
+  form.target = 'song-form-target';
+  form.style.display = 'none';
+
+  const ensureTarget = ()=>{
+    let targetFrame = document.getElementById('song-form-target');
+    if(!targetFrame){
+      targetFrame = document.createElement('iframe');
+      targetFrame.name = 'song-form-target';
+      targetFrame.id = 'song-form-target';
+      targetFrame.style.display = 'none';
+      document.body.appendChild(targetFrame);
+    }
+    return targetFrame;
+  };
+
+  ensureTarget();
+
+  Object.entries({
+    [SONG_GOOGLE_FORM_FIELDS.name]: payload.name,
+    [SONG_GOOGLE_FORM_FIELDS.artist]: payload.artist,
+    [SONG_GOOGLE_FORM_FIELDS.song]: payload.song,
+    [SONG_GOOGLE_FORM_FIELDS.submittedAt]: payload.submittedAt,
+    [SONG_GOOGLE_FORM_FIELDS.action]: payload.action
+  }).forEach(([fieldName, value])=>{
+    if(!fieldName) return;
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = fieldName;
+    input.value = value ?? '';
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+  form.remove();
+
+  return Promise.resolve(true);
+}
+
 songForm.addEventListener('submit', e=>{
   e.preventDefault();
   const name = document.getElementById('reqName').value.trim();
   const artist = document.getElementById('reqArtist').value.trim();
   const song = document.getElementById('reqSong').value.trim();
   if(!name||!artist||!song) return;
-  songs.push({name, artist, song});
-  emptyNote.style.display = 'none';
-  const item = document.createElement('div');
-  item.className = 'song-item';
-  const icon = document.createElement('span');
-  icon.className = 'note-icon'; icon.textContent = '♪';
-  const text = document.createElement('div');
-  const t = document.createElement('div'); t.className='s-title'; t.textContent = song;
-  const m = document.createElement('div'); m.className='s-meta'; m.textContent = artist+' — requested by '+name;
-  text.append(t,m);
-  item.append(icon,text);
-  songList.appendChild(item);
-  songForm.reset();
+  sendSongToGoogleForm({
+    name,
+    artist,
+    song,
+    submittedAt: new Date().toISOString(),
+    action: 'SongRequest'
+  }).catch(()=>{}).finally(()=>{
+    songs.push({name, artist, song});
+    emptyNote.style.display = 'none';
+    const item = document.createElement('div');
+    item.className = 'song-item';
+    const icon = document.createElement('span');
+    icon.className = 'note-icon'; icon.textContent = '♪';
+    const text = document.createElement('div');
+    const t = document.createElement('div'); t.className='s-title'; t.textContent = song;
+    const m = document.createElement('div'); m.className='s-meta'; m.textContent = artist+' — requested by '+name;
+    text.append(t,m);
+    item.append(icon,text);
+    songList.appendChild(item);
+    songForm.reset();
+  });
 });
 
-const RSVP_GOOGLE_FORM_ACTION_URL = '';
 const RSVP_GOOGLE_FORM_FIELDS = {
-  name: '',
-  email: '',
-  attending: '',
-  notes: '',
-  submittedAt: ''
+  name: 'name',
+  email: 'email',
+  attending: 'attending',
+  notes: 'notes',
+  submittedAt: 'submittedAt',
+  action: 'action'
 };
 
 function sendRsvpToGoogleForm(payload){
-  if(!RSVP_GOOGLE_FORM_ACTION_URL) return Promise.resolve(false);
+  if(!FORM_SUBMIT_ACTION_URL) return Promise.resolve(false);
 
   const form = document.createElement('form');
-  form.action = RSVP_GOOGLE_FORM_ACTION_URL;
+  form.action = FORM_SUBMIT_ACTION_URL;
   form.method = 'POST';
   form.target = 'rsvp-form-target';
   form.style.display = 'none';
@@ -201,7 +264,8 @@ function sendRsvpToGoogleForm(payload){
     [RSVP_GOOGLE_FORM_FIELDS.email]: payload.email,
     [RSVP_GOOGLE_FORM_FIELDS.attending]: payload.attending,
     [RSVP_GOOGLE_FORM_FIELDS.notes]: payload.notes,
-    [RSVP_GOOGLE_FORM_FIELDS.submittedAt]: payload.submittedAt
+    [RSVP_GOOGLE_FORM_FIELDS.submittedAt]: payload.submittedAt,
+    [RSVP_GOOGLE_FORM_FIELDS.action]: payload.action
   }).forEach(([fieldName, value])=>{
     if(!fieldName) return;
     const input = document.createElement('input');
@@ -258,7 +322,8 @@ document.getElementById('rsvpForm').addEventListener('submit', e=>{
     attending,
     notes,
     source: 'invite.html',
-    submittedAt: new Date().toISOString()
+    submittedAt: new Date().toISOString(),
+    action: 'RSVP'
   }).catch(()=>{}).finally(()=>{
     document.getElementById('rsvpForm').style.display = 'none';
     document.querySelector('#rsvp .deadline').style.display = 'none';
