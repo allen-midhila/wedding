@@ -8,6 +8,8 @@
   const ctx = canvas.getContext("2d", { alpha: false });
   const scrollTrack = document.getElementById("scroll-track");
   const overlay = document.getElementById("invite-overlay");
+  const thankYou = document.getElementById("thank-you");
+  const thankYouFrame = thankYou ? thankYou.querySelector(".ty-frame") : null;
   let layoutViewportHeight = 0;
   let layoutViewportWidth = 0;
   let scrollRange = 1;
@@ -20,12 +22,14 @@
   function layoutSections() {
     const n = sections.length;
     if (n === 0) return;
-    // Peak positions span the whole scroll so content stays balanced to the last frame.
+    // Use fixed slot spacing (not the live section count) so removing/adding a
+    // section does not shift the others — keeps the original ("old") timings.
+    const SLOTS = 7;
     const start = 0.06;
     const end = 0.97;
-    const span = n > 1 ? (end - start) / (n - 1) : 0;
+    const span = (end - start) / (SLOTS - 1);
     // Overlapping windows keep a continuous cross-fade with no blank gaps.
-    const halfWidth = n > 1 ? span * 0.78 : 0.5;
+    const halfWidth = span * 0.78;
     sectionLayout = sections.map((el, i) => ({
       el,
       index: i,
@@ -133,13 +137,13 @@
     ctx.imageSmoothingQuality = "high";
     ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
 
-    // Expose the rendered (letterboxed) frame size in CSS px so the invite text
-    // can be constrained to the video area instead of the full window.
-    if (overlay) {
-      const cssScale = viewportWidth() / cw;
-      overlay.style.setProperty("--frame-w", `${Math.round(drawWidth * cssScale)}px`);
-      overlay.style.setProperty("--frame-h", `${Math.round(drawHeight * cssScale)}px`);
-    }
+    // Expose the rendered (letterboxed) frame size in CSS px. Set on the root so
+    // both the invite overlay AND the final thank-you screen can match the video
+    // frame width (so it reads as a continuation, not a full-bleed jump).
+    const cssScale = viewportWidth() / cw;
+    const root = document.documentElement;
+    root.style.setProperty("--frame-w", `${Math.round(drawWidth * cssScale)}px`);
+    root.style.setProperty("--frame-h", `${Math.round(drawHeight * cssScale)}px`);
   }
 
   function scrollProgress() {
@@ -150,6 +154,24 @@
   function targetFrameFromScroll() {
     const progress = scrollProgress();
     return Math.min(TOTAL_FRAMES - 1, Math.floor(progress * (TOTAL_FRAMES - 1)));
+  }
+
+  // Cross-fade the thank-you photo in over the held last video frame as the
+  // guest scrolls into the final section (instead of a hard slide-up seam).
+  function updateThankYou() {
+    if (!thankYouFrame) return;
+    const vh = layoutViewportHeight || viewportHeight();
+    const y = Math.max(0, window.scrollY || window.pageYOffset);
+    // Begin the cross-fade a bit before the animation finishes, so the photo is
+    // already dissolving in over the last frames of the scroll animation.
+    const fadeStart = scrollRange - vh * 0.7;
+    const fadeDist = vh * 0.9;
+    let t = (y - fadeStart) / fadeDist;
+    t = Math.min(1, Math.max(0, t));
+    const eased = t * t * (3 - 2 * t); // smoothstep
+    thankYouFrame.style.opacity = eased.toFixed(3);
+    thankYouFrame.style.transform = `translateX(-50%) scale(${(1.06 - 0.06 * eased).toFixed(4)})`;
+    thankYouFrame.style.pointerEvents = eased > 0.99 ? "auto" : "none";
   }
 
   function requestDraw() {
@@ -166,6 +188,7 @@
       }
       drawFrame(frameToRender);
       updateOverlay(progress);
+      updateThankYou();
     });
   }
 
